@@ -96,8 +96,10 @@ Storage if you want to accept trajectory files.
 - Status changes go through database functions (`submit_*`, `approve_*`, `request_changes_*`, `reject_*`,
   `unpublish_*`) that check who is calling. Rules live in the database, not only in the UI.
 
-Supabase's security advisor will flag the public views as "security definer". That is intentional: they run with
-the owner's rights so anonymous visitors can read approved content without any access to the underlying tables.
+Supabase's security advisor will flag the public views as "security definer" (an ERROR-level lint) and a few helper
+functions as callable by signed-in users (WARN). Both are intentional: the views run with the owner's rights so
+anonymous visitors can read approved content without any access to the underlying tables, and the helper and
+review functions each check who is calling. Trigger and internal functions are locked down (migration 0008).
 
 ### Database tests
 
