@@ -5,7 +5,7 @@ import { MdNav } from "./MdNav";
 import { MdThemeContext, useMdTheme } from "./useMdTheme";
 
 /** Client shell: owns the theme, renders the skip link and nav, and passes server-rendered pages through as children. */
-export function MdShell({ children }: { children: ReactNode }) {
+export function MdShell({ children, footer }: { children: ReactNode; footer?: ReactNode }) {
   const { theme, toggle } = useMdTheme();
 
   return (
@@ -14,6 +14,7 @@ export function MdShell({ children }: { children: ReactNode }) {
         <a className="md-skip" href="#md-main">Skip to content</a>
         <MdNav theme={theme} onToggleTheme={toggle} />
         <main id="md-main">{children}</main>
+        {footer}
       </div>
     </MdThemeContext.Provider>
   );

@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { AsciiMotif } from "../ascii/AsciiMotif";
 import { usePublishedRuns } from "./data/hooks";
@@ -7,13 +8,10 @@ import { PdbSearchBox } from "./PdbSearchBox";
 import { ShowcaseStage } from "./ShowcaseStage";
 import { ResultsView } from "./ResultsView";
 
-export const PREFILL_EVENT = "md:prefill-quote";
-
-/** Ask the quote form to prefill a PDB ID and scroll to it. */
-export function requestQuoteFor(pdbId: string) {
-  window.dispatchEvent(new CustomEvent(PREFILL_EVENT, { detail: { pdb_id: pdbId } }));
-  document.getElementById("contact")?.scrollIntoView({ behavior: "smooth", block: "start" });
-  window.setTimeout(() => document.getElementById("q-pdb")?.focus({ preventScroll: true }), 400);
+/** Open the contact page with the PDB ID filled in. */
+export function useRequestQuote() {
+  const router = useRouter();
+  return (pdbId: string) => router.push(`/contact?pdb=${encodeURIComponent(pdbId)}`);
 }
 
 function SearchStatus({ pdb }: { pdb: string }) {
@@ -26,6 +24,7 @@ function SearchStatus({ pdb }: { pdb: string }) {
 }
 
 function NotSimulated({ pdb }: { pdb: string }) {
+  const requestQuoteFor = useRequestQuote();
   return (
     <div className="md-empty" role="status">
       <h3>{pdb} is not simulated yet</h3>

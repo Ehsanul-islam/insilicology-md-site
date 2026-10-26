@@ -1,9 +1,11 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useId, useMemo, useRef, useState } from "react";
 import { usePublishedPdbs } from "./data/hooks";
 import { isValidPdbId, normalisePdbId } from "./data/api";
-import { displayResn } from "./ResultsView";
+import { displayResn } from "../../../lib/data/format";
+import { resolveAnalysisType, suggestAnalysisTypes } from "../../../lib/data/analysis-types";
 
 type Props = {
   value: string;
@@ -21,13 +23,18 @@ export function PdbSearchBox({ value, onChange, onSearch }: Props) {
   const [active, setActive] = useState(-1);
   const [error, setError] = useState<string | null>(null);
   const blurTimer = useRef<number | undefined>(undefined);
+  const router = useRouter();
+  const [mode, setMode] = useState<"pdb" | "type">("pdb");
+  const [typeValue, setTypeValue] = useState("");
+  const isType = mode === "type";
+  const typeMatches = useMemo(() => suggestAnalysisTypes(typeValue), [typeValue]);
 
   const q = normalisePdbId(value);
   const matches = useMemo(() => {
     const list = q ? published.filter((p) => p.pdb_id.startsWith(q)) : published;
     return list.slice(0, 8);
   }, [published, q]);
-  const showList = open && (matches.length > 0 || q.length > 0);
+  const showList = open && (isType ? typeMatches.length > 0 : matches.length > 0 || q.length > 0);
 
   const submit = (id: string) => {
     const pdb = normalisePdbId(id);
@@ -43,8 +50,27 @@ export function PdbSearchBox({ value, onChange, onSearch }: Props) {
     onSearch(pdb);
   };
 
+  const submitType = (text: string) => {
+    const type = resolveAnalysisType(text) ?? (suggestAnalysisTypes(text).length === 1 ? suggestAnalysisTypes(text)[0] : undefined);
+    if (!type) {
+      setError("Pick an analysis type from the list, such as RMSD or hydrogen bonds.");
+      setOpen(false);
+      return;
+    }
+    setError(null);
+    setOpen(false);
+    router.push(`/analysis/${type.slug}`);
+  };
+
+  const switchMode = (m: "pdb" | "type") => {
+    setMode(m);
+    setError(null);
+    setOpen(false);
+    setActive(-1);
+  };
+
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    const n = matches.length;
+    const n = isType ? typeMatches.length : matches.length;
     if (e.key === "ArrowDown" && n) {
       e.preventDefault();
       setOpen(true);
@@ -55,9 +81,14 @@ export function PdbSearchBox({ value, onChange, onSearch }: Props) {
     } else if (e.key === "Escape") {
       setOpen(false);
       setActive(-1);
-    } else if (e.key === "Enter" && open && active >= 0 && matches[active]) {
-      e.preventDefault();
-      submit(matches[active].pdb_id);
+    } else if (e.key === "Enter" && open && active >= 0) {
+      if (isType && typeMatches[active]) {
+        e.preventDefault();
+        submitType(typeMatches[active].name);
+      } else if (!isType && matches[active]) {
+        e.preventDefault();
+        submit(matches[active].pdb_id);
+      }
     }
   };
 
@@ -65,21 +96,30 @@ export function PdbSearchBox({ value, onChange, onSearch }: Props) {
     <form
       className="md-search"
       role="search"
-      aria-label="Search simulations by PDB ID"
+      aria-label={isType ? "Search simulations by analysis type" : "Search simulations by PDB ID"}
       noValidate
       onSubmit={(e) => {
         e.preventDefault();
-        submit(value);
+        if (isType) submitType(typeValue);
+        else submit(value);
       }}
     >
-      <label htmlFor={inputId} className="md-field-label">
-        PDB ID
+      <div className="md-seg" role="group" aria-label="Search by">
+        <button type="button" className="md-seg__btn" aria-pressed={!isType} onClick={() => switchMode("pdb")}>
+          PDB ID
+        </button>
+        <button type="button" className="md-seg__btn" aria-pressed={isType} onClick={() => switchMode("type")}>
+          Analysis type
+        </button>
+      </div>
+      <label htmlFor={inputId} className="md-sr">
+        {isType ? "Analysis type" : "PDB ID"}
       </label>
       <div className="md-search__row">
         <div className="md-combo">
           <input
             id={inputId}
-            className="md-input md-input--mono md-input--lg"
+            className={`md-input md-input--lg${isType ? "" : " md-input--mono"}`}
             role="combobox"
             aria-expanded={showList}
             aria-controls={listId}
@@ -88,13 +128,14 @@ export function PdbSearchBox({ value, onChange, onSearch }: Props) {
             aria-invalid={!!error}
             aria-describedby={`${inputId}-hint`}
             autoComplete="off"
-            autoCapitalize="characters"
+            autoCapitalize={isType ? "off" : "characters"}
             spellCheck={false}
-            maxLength={4}
-            placeholder="e.g. 1AFS"
-            value={value}
+            maxLength={isType ? 60 : 4}
+            placeholder={isType ? "e.g. RMSD or hydrogen bonds" : "e.g. 1AFS"}
+            value={isType ? typeValue : value}
             onChange={(e) => {
-              onChange(e.target.value.toUpperCase());
+              if (isType) setTypeValue(e.target.value);
+              else onChange(e.target.value.toUpperCase());
               setError(null);
               setActive(-1);
               setOpen(true);
@@ -105,7 +146,33 @@ export function PdbSearchBox({ value, onChange, onSearch }: Props) {
             }}
             onKeyDown={onKeyDown}
           />
-          {showList && (
+          {showList && isType && (
+            <div className="md-combo__pop">
+              <ul id={listId} role="listbox" aria-label="Analysis types" className="md-combo__list">
+                {typeMatches.map((ty, i) => (
+                  <li
+                    key={ty.slug}
+                    id={`${listId}-${i}`}
+                    role="option"
+                    aria-selected={i === active}
+                    className="md-combo__opt"
+                    onMouseDown={(e) => {
+                      e.preventDefault();
+                      setTypeValue(ty.name);
+                      submitType(ty.name);
+                    }}
+                    onMouseEnter={() => setActive(i)}
+                  >
+                    <span className="md-combo__text">
+                      <span>{ty.name}</span>
+                      <span className="md-combo__sub">{ty.summary}</span>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {showList && !isType && (
             <div className="md-combo__pop">
               {!q && matches.length > 0 && <p className="md-combo__label md-mono">Recently published</p>}
               {matches.length > 0 && (
@@ -165,7 +232,9 @@ export function PdbSearchBox({ value, onChange, onSearch }: Props) {
         </p>
       ) : (
         <p id={`${inputId}-hint`} className="md-hint">
-          Four characters, as listed on rcsb.org. Suggestions show IDs we have published.
+          {isType
+            ? "Pick the analysis or simulation type. Aliases such as RMSD and protein RMSD find the same page."
+            : "Four characters, as listed on rcsb.org. Suggestions show IDs we have published."}
         </p>
       )}
     </form>

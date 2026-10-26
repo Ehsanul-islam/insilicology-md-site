@@ -1,16 +1,15 @@
 "use client";
 
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import type { MdTheme } from "./useMdTheme";
 
 const LINKS = [
-  ["Simulations", "#simulations"],
-  ["Analysis", "#analysis"],
-  ["Pricing", "#pricing"],
-  ["Showcase", "#showcase"],
-  ["Reviews", "#reviews"],
-  ["Services", "#services"],
-  ["Contact", "#contact"],
+  ["Home", "/"],
+  ["Tutorials", "/tutorials"],
+  ["Blog", "/blog"],
+  ["Contact", "/contact"],
 ] as const;
 
 function ThemeIcon() {
@@ -36,6 +35,8 @@ function MenuIcon({ open }: { open: boolean }) {
 
 export function MdNav({ theme, onToggleTheme }: { theme: MdTheme; onToggleTheme: () => void }) {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+  const isCurrent = (href: string) => (href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`));
 
   useEffect(() => {
     if (!open) return;
@@ -48,13 +49,13 @@ export function MdNav({ theme, onToggleTheme }: { theme: MdTheme; onToggleTheme:
     <header className="md-nav">
       <nav className="md-wrap" aria-label="MD simulation service">
         <div className="md-nav-row">
-          <a className="md-brand" href="/" aria-label="Insilicology home">
+          <Link className="md-brand" href="/" aria-label="Insilicology home">
             <span className="md-brand-mark" aria-hidden="true">─◆─</span> Insilicology
-          </a>
+          </Link>
           <ul className="md-links">
             {LINKS.map(([label, href]) => (
               <li key={href}>
-                <a href={href}>{label}</a>
+                <Link href={href} aria-current={isCurrent(href) ? "page" : undefined}>{label}</Link>
               </li>
             ))}
           </ul>
@@ -77,7 +78,7 @@ export function MdNav({ theme, onToggleTheme }: { theme: MdTheme; onToggleTheme:
             >
               <MenuIcon open={open} />
             </button>
-            <a className="md-btn md-btn-primary" href="#contact">Get a quote</a>
+            <Link className="md-btn md-btn-primary" href="/contact">Get a quote</Link>
           </div>
         </div>
         {open && (
@@ -85,7 +86,7 @@ export function MdNav({ theme, onToggleTheme }: { theme: MdTheme; onToggleTheme:
             <ul>
               {LINKS.map(([label, href]) => (
                 <li key={href}>
-                  <a href={href} onClick={() => setOpen(false)}>{label}</a>
+                  <Link href={href} aria-current={isCurrent(href) ? "page" : undefined} onClick={() => setOpen(false)}>{label}</Link>
                 </li>
               ))}
             </ul>

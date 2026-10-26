@@ -2,6 +2,15 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { MdHero } from "../components/md/MdHero";
 import { Showcase } from "../components/md/showcase/Showcase";
+import { pageMetadata } from "../lib/seo";
+import { HomeSections } from "../components/md/pages/HomeSections";
+
+export const metadata = pageMetadata({
+  title: "Molecular Dynamics Simulation Service | Insilicology",
+  description:
+    "Protein–ligand, apo/mutant, protein–protein and membrane MD simulations with GROMACS and CHARMM36, plus a searchable database of simulation results by PDB ID and analysis type.",
+  path: "/",
+});
 
 /** Static ASCII frame of the hero structure: server-rendered so crawlers, no-JS visitors and first paint see the art. */
 async function heroFrame() {
@@ -17,7 +26,8 @@ export default async function HomePage() {
     <>
       <MdHero ssrFrame={await heroFrame()} />
       <Showcase />
-      {/* Next sections: 01 Simulations, 02 Analysis, 03 Pricing, 05 Reviews, 06 Services, 07 Contact */}
+      <HomeSections />
+      {/* Still to build: pricing, reviews and services sections */}
     </>
   );
 }

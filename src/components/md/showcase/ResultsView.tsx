@@ -4,24 +4,15 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { IS_PREVIEW, SITE_URL, ligandSlug, requestDownloadBundle } from "./data/api";
 import { groupsFor, orderFigures, type FigureGroup } from "./data/figures";
 import type { MdRun } from "./data/types";
+import Link from "next/link";
+import { recordPath } from "../../../lib/data/records";
+import { complexUrl, displayResn, ligandLabelOf, ligandsOf } from "../../../lib/data/format";
 import { AsciiMotif } from "../ascii/AsciiMotif";
 import { CitationBox, CopyButton } from "./Citation";
 import { FigureImage } from "./FigureImage";
 import { FigureViewer } from "./FigureViewer";
 
-export function ligandLabelOf(run: MdRun) {
-  const name = run.ligand_name || run.ligand_resn || "ligand";
-  return run.ligand_resn && run.ligand_name ? `${name} (${displayResn(run.ligand_resn)})` : name;
-}
-export function ligandsOf(run: MdRun) {
-  return (run.ligand_resn || "").split(/[^A-Za-z0-9]+/).filter(Boolean).map((x) => x.toUpperCase());
-}
-export function displayResn(resn: string) {
-  return resn.split(/[^A-Za-z0-9]+/).filter(Boolean).join(" + ").toUpperCase();
-}
-export function complexUrl(run: MdRun) {
-  return `${SITE_URL}/md/${run.pdb_id.toLowerCase()}/${ligandSlug(run)}`;
-}
+export { complexUrl, displayResn, ligandLabelOf, ligandsOf };
 
 function fmtLength(run: MdRun) {
   if (run.length_ns == null) return null;
@@ -97,6 +88,8 @@ export function ResultsView({ pdb, runs, current, onPick }: Props) {
         </h3>
         <p className="md-muted">
           {runs.length === 1 ? "1 complex simulated" : `${runs.length} complexes simulated`}.{" "}
+          <Link href={`/pdb/${pdb.toLowerCase()}`}>Open the {pdb} page</Link>
+          {" · "}
           <a href={`https://www.rcsb.org/structure/${pdb}`} target="_blank" rel="noreferrer">
             View {pdb} on RCSB
           </a>
@@ -152,7 +145,7 @@ export function ResultsView({ pdb, runs, current, onPick }: Props) {
             <dd>{fmtDate(run.published_at) || ph("DATE")}</dd>
             <dt>Link</dt>
             <dd className="md-detail__link">
-              <span className="md-mono md-small">{link.replace(/^https?:\/\//, "")}</span>
+              <Link className="md-mono md-small" href={recordPath(run)}>{link.replace(/^https?:\/\//, "")}</Link>
               <CopyButton text={link} label="Copy link" copiedLabel="Link copied" />
             </dd>
           </dl>

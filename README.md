@@ -10,13 +10,18 @@ npm run dev        # http://localhost:8080
 npm run build      # production build in .next/
 npm run start      # serve the production build
 npm run typecheck
+npm test           # unit tests (vitest)
 ```
 
-Optional env var: `NEXT_PUBLIC_SITE_URL` (canonical site URL, defaults to https://insilicology.com).
+Env vars (see `.env.example`): `NEXT_PUBLIC_SITE_URL` (canonical site URL, defaults to https://insilicology.com) and `NEXT_PUBLIC_CONTACT_EMAIL`.
 
 ## Where things are
 
 - `src/app/` — Next.js routes (`layout.tsx`, `page.tsx`); pages are server-rendered
+- `src/app/` routes: `/` home, `/analysis` and `/analysis/[slug]` (category hubs), `/pdb/[id]`, `/simulations` and `/simulations/[slug]`, `/tutorials`, `/blog`, `/contact`, plus `sitemap.ts`, `robots.ts` and OG images
+- `content/tutorials/*.md` — tutorials (frontmatter + Markdown); add a file to publish one
+- `src/lib/data/` — server-side data reads (analysis types, records, tutorials, posts); sample data until Supabase is connected
+- `src/lib/seo.ts` — metadata, canonical and JSON-LD helpers; sample/placeholder pages are `noindex` and left out of the sitemap
 - `src/components/md/MdShell.tsx` — client shell: theme state, skip link, nav
 - `src/components/md/MdHero.tsx` — hero section (headline, CTAs, ASCII frame)
 - `src/components/md/MdNav.tsx` — top navigation, theme toggle, mobile menu
