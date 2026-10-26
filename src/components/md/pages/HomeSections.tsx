@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { listAnalysisTypes } from "../../../lib/data/analysis-type-store";
+import { listSimulationTypes } from "../../../lib/data/simulation-type-store";
 import { isIndexable, listRecords } from "../../../lib/data/records";
 import { listPosts } from "../../../lib/data/posts";
 import { listTutorials } from "../../../lib/data/tutorials";
@@ -19,18 +19,18 @@ function Head({ id, label, title, href, more }: { id: string; label: string; tit
 
 /** Server-rendered sections under the showcase: categories, featured records, tutorials and posts. */
 export async function HomeSections() {
-  const [records, tutorials, posts, types] = await Promise.all([listRecords(12), listTutorials(), listPosts(), listAnalysisTypes()]);
+  const [records, tutorials, posts, types] = await Promise.all([listRecords(12), listTutorials(), listPosts(), listSimulationTypes()]);
   const featured = records.filter(isIndexable).slice(0, 3);
 
   return (
     <>
       <section className="md-section" aria-labelledby="home-categories">
         <div className="md-wrap">
-          <Head id="home-categories" label="─◆─ Categories" title="Browse by analysis type" href="/analysis" more="All analysis types" />
+          <Head id="home-categories" label="─◆─ Categories" title="Browse by simulation type" href="/simulation-types" more="All simulation types" />
           <ul className="md-cards">
-            {types.slice(0, 8).map((t) => (
+            {types.map((t) => (
               <li key={t.slug}>
-                <Link className="md-card" href={`/analysis/${t.slug}`}>
+                <Link className="md-card" href={`/simulation-types/${t.slug}`}>
                   <h3 className="md-card__title">{t.name}</h3>
                   <p className="md-card__text">{t.summary}</p>
                 </Link>

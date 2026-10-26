@@ -5,18 +5,21 @@ import { useId, useMemo, useRef, useState } from "react";
 import { usePublishedPdbs } from "./data/hooks";
 import { isValidPdbId, normalisePdbId } from "./data/api";
 import { displayResn } from "../../../lib/data/format";
-import { resolveAnalysisType, suggestAnalysisTypes, type AnalysisType } from "../../../lib/data/analysis-types";
+import { resolveType, suggestTypes, type TypeLike } from "../../../lib/data/analysis-types";
+import { SIMULATION_TYPES } from "../../../lib/data/simulation-types";
 
 type Props = {
-  /** Analysis types for the "Analysis type" mode; defaults to the built-in list. */
-  types?: AnalysisType[];
+  /** Simulation types for the "Simulation type" mode; defaults to the built-in list. */
+  types?: TypeLike[];
+  /** Where a chosen type leads; the type slug is appended. */
+  basePath?: string;
   value: string;
   onChange: (v: string) => void;
   onSearch: (pdbId: string) => void;
 };
 
 /** PDB ID input with suggestions from published runs (ARIA combobox + listbox). */
-export function PdbSearchBox({ types, value, onChange, onSearch }: Props) {
+export function PdbSearchBox({ types = SIMULATION_TYPES, basePath = "/simulation-types", value, onChange, onSearch }: Props) {
   const uid = useId().replace(/:/g, "");
   const inputId = `pdb-${uid}`;
   const listId = `pdb-list-${uid}`;
@@ -29,7 +32,7 @@ export function PdbSearchBox({ types, value, onChange, onSearch }: Props) {
   const [mode, setMode] = useState<"pdb" | "type">("pdb");
   const [typeValue, setTypeValue] = useState("");
   const isType = mode === "type";
-  const typeMatches = useMemo(() => suggestAnalysisTypes(typeValue, 8, types), [typeValue, types]);
+  const typeMatches = useMemo(() => suggestTypes(typeValue, 8, types), [typeValue, types]);
 
   const q = normalisePdbId(value);
   const matches = useMemo(() => {
@@ -53,15 +56,15 @@ export function PdbSearchBox({ types, value, onChange, onSearch }: Props) {
   };
 
   const submitType = (text: string) => {
-    const type = resolveAnalysisType(text, types) ?? (suggestAnalysisTypes(text, 8, types).length === 1 ? suggestAnalysisTypes(text, 8, types)[0] : undefined);
+    const type = resolveType(text, types) ?? (suggestTypes(text, 8, types).length === 1 ? suggestTypes(text, 8, types)[0] : undefined);
     if (!type) {
-      setError("Pick an analysis type from the list, such as RMSD or hydrogen bonds.");
+      setError("Pick a simulation type from the list, such as Apo protein or Umbrella sampling.");
       setOpen(false);
       return;
     }
     setError(null);
     setOpen(false);
-    router.push(`/analysis/${type.slug}`);
+    router.push(`${basePath}/${type.slug}`);
   };
 
   const switchMode = (m: "pdb" | "type") => {
@@ -98,7 +101,7 @@ export function PdbSearchBox({ types, value, onChange, onSearch }: Props) {
     <form
       className="md-search"
       role="search"
-      aria-label={isType ? "Search simulations by analysis type" : "Search simulations by PDB ID"}
+      aria-label={isType ? "Search simulations by simulation type" : "Search simulations by PDB ID"}
       noValidate
       onSubmit={(e) => {
         e.preventDefault();
@@ -111,11 +114,11 @@ export function PdbSearchBox({ types, value, onChange, onSearch }: Props) {
           PDB ID
         </button>
         <button type="button" className="md-seg__btn" aria-pressed={isType} onClick={() => switchMode("type")}>
-          Analysis type
+          Simulation type
         </button>
       </div>
       <label htmlFor={inputId} className="md-sr">
-        {isType ? "Analysis type" : "PDB ID"}
+        {isType ? "Simulation type" : "PDB ID"}
       </label>
       <div className="md-search__row">
         <div className="md-combo">
@@ -133,7 +136,7 @@ export function PdbSearchBox({ types, value, onChange, onSearch }: Props) {
             autoCapitalize={isType ? "off" : "characters"}
             spellCheck={false}
             maxLength={isType ? 60 : 4}
-            placeholder={isType ? "e.g. RMSD or hydrogen bonds" : "e.g. 1AFS"}
+            placeholder={isType ? "e.g. Apo protein or umbrella sampling" : "e.g. 1AFS"}
             value={isType ? typeValue : value}
             onChange={(e) => {
               if (isType) setTypeValue(e.target.value);
@@ -150,7 +153,7 @@ export function PdbSearchBox({ types, value, onChange, onSearch }: Props) {
           />
           {showList && isType && (
             <div className="md-combo__pop">
-              <ul id={listId} role="listbox" aria-label="Analysis types" className="md-combo__list">
+              <ul id={listId} role="listbox" aria-label="Simulation types" className="md-combo__list">
                 {typeMatches.map((ty, i) => (
                   <li
                     key={ty.slug}
@@ -235,7 +238,7 @@ export function PdbSearchBox({ types, value, onChange, onSearch }: Props) {
       ) : (
         <p id={`${inputId}-hint`} className="md-hint">
           {isType
-            ? "Pick the analysis or simulation type. Aliases such as RMSD and protein RMSD find the same page."
+            ? "Pick the kind of simulation. Other wordings, such as apo or unbound protein, find the same page."
             : "Four characters, as listed on rcsb.org. Suggestions show IDs we have published."}
         </p>
       )}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import type { AnalysisType } from "../../../lib/data/analysis-types";
+import type { TypeLike } from "../../../lib/data/analysis-types";
 import { useState } from "react";
 import { AsciiMotif } from "../ascii/AsciiMotif";
 import { usePublishedRuns } from "./data/hooks";
@@ -41,7 +41,7 @@ function NotSimulated({ pdb }: { pdb: string }) {
 }
 
 /** Landing-page section: search by PDB ID, then browse complexes and their figures. */
-export function Showcase({ types }: { types?: AnalysisType[] }) {
+export function Showcase({ types }: { types?: TypeLike[] }) {
   const [value, setValue] = useState("");
   const [pdb, setPdb] = useState<string | null>(null);
   const [current, setCurrent] = useState(0);

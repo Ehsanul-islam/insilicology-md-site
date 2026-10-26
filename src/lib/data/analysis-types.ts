@@ -215,19 +215,29 @@ export function getAnalysisType(slug: string) {
   return ANALYSIS_TYPES.find((t) => t.slug === slug);
 }
 
-/** Resolve free text (a slug, name or alias) to its canonical type. */
-export function resolveAnalysisType(query: string, types: AnalysisType[] = ANALYSIS_TYPES) {
+/** What the type pickers and search need from any list of types (analysis or simulation). */
+export type TypeLike = { slug: string; name: string; aliases: string[]; summary: string };
+
+const keysOf = (t: TypeLike) => [t.slug, t.name, ...t.aliases].map(normaliseKey);
+
+/** Resolve free text (a slug, name or alias) to its canonical type in the given list. */
+export function resolveType<T extends TypeLike>(query: string, types: T[]): T | undefined {
   const k = normaliseKey(query);
   if (!k) return undefined;
-  return types.find((t) => [t.slug, t.name, ...t.aliases].some((a) => normaliseKey(a) === k));
+  return types.find((t) => keysOf(t).includes(k));
 }
 
 /** Types whose name, slug or any alias contains the query, for search suggestions. */
-export function suggestAnalysisTypes(query: string, limit = 8, types: AnalysisType[] = ANALYSIS_TYPES) {
+export function suggestTypes<T extends TypeLike>(query: string, limit: number, types: T[]): T[] {
   const k = normaliseKey(query);
   if (!k) return types.slice(0, limit);
-  return types.filter((t) => [t.slug, t.name, ...t.aliases].some((a) => normaliseKey(a).includes(k))).slice(0, limit);
+  return types.filter((t) => keysOf(t).some((a) => a.includes(k))).slice(0, limit);
 }
+
+export const resolveAnalysisType = (query: string, types: AnalysisType[] = ANALYSIS_TYPES) => resolveType(query, types);
+
+export const suggestAnalysisTypes = (query: string, limit = 8, types: AnalysisType[] = ANALYSIS_TYPES) =>
+  suggestTypes(query, limit, types);
 
 export const typeFigureKind = (slug: string | null | undefined) => ANALYSIS_TYPES.find((t) => t.slug === slug)?.figureKind;
 

@@ -94,6 +94,11 @@ Storage if you want to accept trajectory files.
 - The public site reads the **approved snapshot** (`public_records`, `public_posts` views), never the author's
   working copy. Editing something that is live sends the edit back to review; the approved version stays up
   until the edit is approved.
+- There are two category lists, both managed only by administrators. **Simulation types** say what is simulated or
+  which method is used (apo protein, protein–ligand complex, membrane protein, umbrella sampling ...) and drive the
+  home page, the search switch and `/simulation-types`. **Analysis types** say which analyses a record contains
+  (RMSD, RMSF, SASA ...) and live under `/analysis`. Every record has one simulation type and its analyses.
+  Both lists are defined in `src/lib/data/*-types.ts` and seeded with `npm run db:seed`.
 - Only administrators create analysis types. Users can request one. Names, slugs and aliases are unique across
   types ("RMSD", "RMSD analysis" and "Protein RMSD" cannot become separate categories).
 - Status changes go through database functions (`submit_*`, `approve_*`, `request_changes_*`, `reject_*`,

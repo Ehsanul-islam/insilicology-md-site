@@ -1,5 +1,6 @@
 import type { FigureKind, MdFigure, MdRun, PublishedPdb } from "../../components/md/showcase/data/types";
 import { ANALYSIS_TYPES, type AnalysisType } from "./analysis-types";
+import type { SimulationType } from "./simulation-types";
 import type { BlogPost } from "./posts";
 
 /** Rows as returned by the public_records / published_pdbs / public_posts views and analysis_types table. */
@@ -10,6 +11,8 @@ export type PublicRecordRow = {
   description: string | null;
   type_slug: string | null;
   type_name: string | null;
+  sim_type_slug: string | null;
+  sim_type_name: string | null;
   pdb_id: string | null;
   protein_name: string | null;
   molecules: { kind?: string; name?: string; resn?: string; pubchem_cid?: number }[];
@@ -47,6 +50,16 @@ export type PublicPostRow = {
   author_name: string | null;
   published_at: string;
   updated_at: string | null;
+};
+
+export type SimulationTypeRow = {
+  slug: string;
+  name: string;
+  aliases: string[];
+  summary: string;
+  intro: string[];
+  requires_structure: boolean;
+  sort_order: number;
 };
 
 export type AnalysisTypeRow = {
@@ -130,6 +143,8 @@ export function mapPublicRecord(row: PublicRecordRow): MdRun {
     slug: row.slug,
     title: row.title,
     type_slug: row.type_slug,
+    simulation_type_slug: row.sim_type_slug,
+    simulation_type_name: row.sim_type_name,
     license: row.license,
   };
 }
@@ -154,6 +169,15 @@ export const mapPublicPost = (row: PublicPostRow): BlogPost => ({
   publishedAt: row.published_at,
   updatedAt: row.updated_at ?? row.published_at,
   references: row.refs ?? [],
+});
+
+export const mapSimulationType = (row: SimulationTypeRow): SimulationType => ({
+  slug: row.slug,
+  name: row.name,
+  aliases: row.aliases ?? [],
+  summary: row.summary,
+  intro: row.intro ?? [],
+  requiresStructure: row.requires_structure,
 });
 
 /** Database rows keep the code-side fields (figure kind, file rules) from the built-in list, matched by slug. */

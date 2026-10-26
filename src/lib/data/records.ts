@@ -30,12 +30,13 @@ const fail = (what: string, message: string): never => {
 const sample = () => SAMPLE_PUBLISHED.flatMap((p) => sampleRunsFor(p.pdb_id));
 
 const dbRecords = cachedRead(
-  async (kind: "recent" | "slug" | "pdb" | "type", value: string, limit: number): Promise<MdRun[]> => {
+  async (kind: "recent" | "slug" | "pdb" | "type" | "simtype", value: string, limit: number): Promise<MdRun[]> => {
     const db = createPublicClient()!;
     let q = db.from("public_records").select("*");
     if (kind === "slug") q = q.eq("slug", value);
     if (kind === "pdb") q = q.eq("pdb_id", value);
     if (kind === "type") q = q.eq("type_slug", value);
+    if (kind === "simtype") q = q.eq("sim_type_slug", value);
     const { data, error } = await q.order("published_at", { ascending: false }).limit(limit);
     if (error) fail("records", error.message);
     return (data as PublicRecordRow[]).map(mapPublicRecord);
@@ -69,6 +70,12 @@ export async function getRecordsForType(typeSlug: string): Promise<MdRun[]> {
     if (typeForFigureKind(k)?.slug === typeSlug) kinds.add(k);
   }
   return sample().filter((r) => r.md_figures?.some((f) => kinds.has(f.kind)));
+}
+
+/** Published records of one simulation type (apo protein, protein–ligand complex, umbrella sampling ...). */
+export async function getRecordsForSimulationType(slug: string): Promise<MdRun[]> {
+  if (createPublicClient()) return dbRecords("simtype", slug, LIST_LIMIT);
+  return sample().filter((r) => r.simulation_type_slug === slug);
 }
 
 export async function searchRecords({ pdb, type }: { pdb?: string; type?: string }): Promise<MdRun[]> {

@@ -9,64 +9,58 @@
   "doi": "10.1000/example.1",
   "files": [
     {
-      "caption": null,
-      "figure_kind": "rmsd",
-      "filename": "rmsd.png",
-      "id": "22222222-2222-2222-2222-000000000001",
-      "kind": "png",
-      "parsed": null,
-      "size_bytes": 90000,
-      "storage_path": "OWNER/RECORD/rmsd.png"
-    },
-    {
-      "caption": null,
-      "figure_kind": null,
-      "filename": "start.pdb",
-      "id": "22222222-2222-2222-2222-000000000002",
-      "kind": "pdb",
-      "parsed": null,
-      "size_bytes": 200000,
-      "storage_path": "OWNER/RECORD/start.pdb"
-    },
-    {
-      "caption": null,
-      "figure_kind": null,
-      "filename": "traj.xtc",
-      "id": "22222222-2222-2222-2222-000000000003",
-      "kind": "xtc",
-      "parsed": null,
-      "size_bytes": 900000,
-      "storage_path": "OWNER/RECORD/traj.xtc"
-    },
-    {
       "caption": "Backbone RMSD",
       "figure_kind": "rmsd",
       "filename": "rmsd.xvg",
-      "id": "22222222-2222-2222-2222-000000000004",
+      "id": "22222222-2222-2222-2222-000000000001",
       "kind": "xvg",
-      "parsed": null,
       "size_bytes": 5000,
       "storage_path": "OWNER/RECORD/rmsd.xvg"
     },
     {
       "caption": null,
+      "figure_kind": "rmsd",
+      "filename": "rmsd.png",
+      "id": "22222222-2222-2222-2222-000000000002",
+      "kind": "png",
+      "size_bytes": 90000,
+      "storage_path": "OWNER/RECORD/rmsd.png"
+    },
+    {
+      "caption": null,
       "figure_kind": "rmsf",
       "filename": "rmsf.xvg",
-      "id": "22222222-2222-2222-2222-000000000005",
+      "id": "22222222-2222-2222-2222-000000000003",
       "kind": "xvg",
-      "parsed": null,
       "size_bytes": 4000,
       "storage_path": "OWNER/RECORD/rmsf.xvg"
     },
     {
       "caption": null,
       "figure_kind": null,
+      "filename": "traj.xtc",
+      "id": "22222222-2222-2222-2222-000000000004",
+      "kind": "xtc",
+      "size_bytes": 900000,
+      "storage_path": "OWNER/RECORD/traj.xtc"
+    },
+    {
+      "caption": null,
+      "figure_kind": null,
       "filename": "untagged.xvg",
-      "id": "22222222-2222-2222-2222-000000000006",
+      "id": "22222222-2222-2222-2222-000000000005",
       "kind": "xvg",
-      "parsed": null,
       "size_bytes": 3000,
       "storage_path": "OWNER/RECORD/untagged.xvg"
+    },
+    {
+      "caption": null,
+      "figure_kind": null,
+      "filename": "start.pdb",
+      "id": "22222222-2222-2222-2222-000000000006",
+      "kind": "pdb",
+      "size_bytes": 200000,
+      "storage_path": "OWNER/RECORD/start.pdb"
     }
   ],
   "force_field": "CHARMM36",
@@ -93,6 +87,8 @@
   "protein_name": "3-alpha-hydroxysteroid dehydrogenase",
   "published_at": "2026-10-26T12:00:00+00:00",
   "replicas": 3,
+  "sim_type_name": "Protein\u2013ligand complex",
+  "sim_type_slug": "protein-ligand-complex",
   "slug": "1afs-tes",
   "software": "GROMACS",
   "software_version": "2024.2",

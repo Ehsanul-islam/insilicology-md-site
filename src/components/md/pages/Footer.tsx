@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { listAnalysisTypes } from "../../../lib/data/analysis-type-store";
+import { listSimulationTypes } from "../../../lib/data/simulation-type-store";
 
 export async function MdFooter() {
-  const types = await listAnalysisTypes();
+  const [simulationTypes, analysisTypes] = await Promise.all([listSimulationTypes(), listAnalysisTypes()]);
   return (
     <footer className="md-footer">
       <div className="md-wrap">
@@ -19,15 +20,24 @@ export async function MdFooter() {
             <h2>Explore</h2>
             <ul>
               <li><Link href="/simulations">Simulations</Link></li>
+              <li><Link href="/simulation-types">Simulation types</Link></li>
               <li><Link href="/analysis">Analysis types</Link></li>
               <li><Link href="/tutorials">Tutorials</Link></li>
               <li><Link href="/blog">Blog</Link></li>
             </ul>
           </nav>
-          <nav aria-label="Analysis types">
+          <nav aria-label="Simulation types">
+            <h2>Simulation types</h2>
+            <ul>
+              {simulationTypes.slice(0, 5).map((t) => (
+                <li key={t.slug}><Link href={`/simulation-types/${t.slug}`}>{t.name}</Link></li>
+              ))}
+            </ul>
+          </nav>
+          <nav aria-label="Analyses">
             <h2>Analyses</h2>
             <ul>
-              {types.slice(0, 5).map((t) => (
+              {analysisTypes.slice(0, 5).map((t) => (
                 <li key={t.slug}><Link href={`/analysis/${t.slug}`}>{t.name}</Link></li>
               ))}
             </ul>

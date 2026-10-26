@@ -4,8 +4,8 @@ declare
   o2  constant uuid := '00000000-0000-0000-0000-00000000b201';
   adm constant uuid := '00000000-0000-0000-0000-00000000ad03';
   rs  constant uuid := '00000000-0000-0000-0000-00000000c201';
-  rmsd uuid; other uuid;
-  rid uuid; rid2 uuid; rid3 uuid; fid uuid; first_pub timestamptz;
+  rmsd uuid; other uuid; sim uuid;
+  rid uuid; rid2 uuid; rid3 uuid; rid_nosim uuid; fid uuid; first_pub timestamptz;
 begin
   perform t.make_user(o1, 'rec-owner@example.org');
   perform t.make_user(o2, 'rec-other@example.org');
@@ -13,20 +13,21 @@ begin
   perform t.make_user(rs, 'rec-restricted@example.org', 'user', 'restricted');
   select id into rmsd from public.analysis_types where slug = 'rmsd';
   select id into other from public.analysis_types where slug = 'other';
+  select id into sim from public.simulation_types where slug = 'protein-ligand-complex';
   update public.profiles set display_name = 'Dr Owner' where id = o1;
 
   -- creating a draft ---------------------------------------------------------------------------
   perform t.login(o1);
-  insert into public.records (owner_id, type_id, title, pdb_id, protein_name, molecules, force_field, length_ns, doi)
-  values (o1, rmsd, 'Testosterone in 3-alpha-HSD', '1afs', '3-alpha-hydroxysteroid dehydrogenase',
+  insert into public.records (owner_id, type_id, simulation_type_id, title, pdb_id, protein_name, molecules, force_field, length_ns, doi)
+  values (o1, rmsd, sim, 'Testosterone in 3-alpha-HSD', '1afs', '3-alpha-hydroxysteroid dehydrogenase',
           '[{"kind":"ligand","name":"Testosterone","resn":"TES"}]', 'CHARMM36', 100, '10.1000/abc123')
   returning id into rid;
   perform t.is((select slug from public.records where id = rid), '1afs-tes', 'slug is <pdb>-<ligand>');
   perform t.is((select pdb_id from public.records where id = rid), '1AFS', 'PDB ID upper-cased');
   perform t.is((select status::text from public.records where id = rid), 'draft', 'new records are drafts');
-  insert into public.records (owner_id, type_id, title, pdb_id, molecules) values (o1, rmsd, 'Second TES run', '1AFS', '[{"kind":"ligand","resn":"TES"}]') returning id into rid2;
+  insert into public.records (owner_id, type_id, simulation_type_id, title, pdb_id, molecules) values (o1, rmsd, sim, 'Second TES run', '1AFS', '[{"kind":"ligand","resn":"TES"}]') returning id into rid2;
   perform t.is((select slug from public.records where id = rid2), '1afs-tes-2', 'slug collision is numbered');
-  insert into public.records (owner_id, type_id, title) values (o1, other, 'Membrane thickness study') returning id into rid3;
+  insert into public.records (owner_id, type_id, simulation_type_id, title) values (o1, other, sim, 'Membrane thickness study') returning id into rid3;
   perform t.is((select slug from public.records where id = rid3), 'membrane-thickness-study', 'slug from title when there is no PDB ID');
   perform t.fails(format($q$update public.records set slug = 'mine' where id = %L$q$, rid), '42501', 'slug cannot be changed by the owner');
 
@@ -64,6 +65,10 @@ begin
 
   -- submitting: validation -------------------------------------------------------------------------
   perform t.login(o1);
+  insert into public.records (owner_id, type_id, title, pdb_id) values (o1, rmsd, 'No simulation type yet', '4AAA') returning id into rid_nosim;
+  insert into public.record_files (record_id, kind, filename, storage_path, size_bytes) values (rid_nosim, 'xvg', 'a.xvg', o1 || '/' || rid_nosim || '/a.xvg', 10);
+  perform t.fails(format($q$select public.submit_record(%L)$q$, rid_nosim), '23514', 'a simulation type is required to submit');
+  begin perform public.submit_record(rid_nosim); exception when others then perform t.is(sqlerrm, 'choose a simulation type', 'the message asks for a simulation type'); end;
   perform t.fails(format($q$select public.submit_record(%L)$q$, rid), '23514', 'cannot submit without files');
   perform t.fails(format($q$insert into public.record_files (record_id, kind, filename, storage_path, size_bytes) values (%L, 'xvg', 'a.xvg', 'elsewhere/a.xvg', 10)$q$, rid), '23514', 'file path must be under owner/record');
   insert into public.record_files (record_id, kind, filename, storage_path, size_bytes) values (rid, 'csv', 'rmsd.csv', o1 || '/' || rid || '/rmsd.csv', 1000);

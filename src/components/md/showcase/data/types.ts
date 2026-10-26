@@ -36,6 +36,9 @@ export type MdRun = {
   slug?: string;
   title?: string;
   type_slug?: string | null;
+  /** What is simulated (apo protein, protein–ligand complex, umbrella sampling ...). */
+  simulation_type_slug?: string | null;
+  simulation_type_name?: string | null;
   license?: string | null;
 };
 

@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import record from "./fixtures/public_record.json";
 import pdb from "./fixtures/published_pdb.json";
 import post from "./fixtures/public_post.json";
-import { figuresFor, fileUrl, ligandsOf, mapAnalysisType, mapPublicPost, mapPublicRecord, mapPublishedPdb, type PublicPostRow, type PublicRecordRow } from "../src/lib/data/map";
+import { figuresFor, fileUrl, ligandsOf, mapAnalysisType, mapPublicPost, mapPublicRecord, mapPublishedPdb, mapSimulationType, type PublicPostRow, type PublicRecordRow } from "../src/lib/data/map";
 
 // The fixtures are the real output of the public views (npm run db:fixtures).
 const row = record as unknown as PublicRecordRow;
@@ -21,6 +21,13 @@ describe("mapPublicRecord", () => {
     expect(run.doi).toBe("10.1000/example.1");
     expect(run.status).toBe("published");
     expect(run.placeholder).toBeUndefined();
+  });
+
+  it("maps the simulation type", () => {
+    expect(run.simulation_type_slug).toBe("protein-ligand-complex");
+    expect(run.simulation_type_name).toBe("Protein–ligand complex");
+    const none = mapPublicRecord({ ...row, sim_type_slug: null, sim_type_name: null } as PublicRecordRow);
+    expect(none.simulation_type_slug).toBeNull();
   });
 
   it("joins ligands in the declared order", () => {
@@ -87,6 +94,12 @@ describe("other mappers", () => {
     expect(p.categorySlug).toBe("methods");
     expect(p.references[0].url).toContain("doi.org");
     expect(mapPublicPost({ ...(post as unknown as PublicPostRow), author_name: null, category_name: null, category_slug: null }).author).toBe("Insilicology contributor");
+  });
+
+  it("maps simulation type rows", () => {
+    const t = mapSimulationType({ slug: "apo-protein", name: "Apo protein", aliases: ["Apo"], summary: "s", intro: ["a", "b"], requires_structure: true, sort_order: 10 });
+    expect(t).toEqual({ slug: "apo-protein", name: "Apo protein", aliases: ["Apo"], summary: "s", intro: ["a", "b"], requiresStructure: true });
+    expect(mapSimulationType({ slug: "x", name: "X", aliases: null as never, summary: "", intro: null as never, requires_structure: false, sort_order: 1 }).aliases).toEqual([]);
   });
 
   it("keeps code-side figure kinds for built-in types", () => {

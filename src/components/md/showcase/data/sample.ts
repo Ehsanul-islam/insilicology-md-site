@@ -31,6 +31,8 @@ function run(id: string, resn: string, name: string, kinds: FigureKind[]): MdRun
     created_at: "",
     published_at: null,
     placeholder: true,
+    simulation_type_slug: "protein-ligand-complex",
+    simulation_type_name: "Protein–ligand complex",
     md_figures: kinds.map((k) => ({
       id: `preview-${id}-${k}`,
       run_id: `preview-${id}`,

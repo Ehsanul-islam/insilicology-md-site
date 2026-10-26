@@ -3,7 +3,7 @@ declare
   o   constant uuid := '00000000-0000-0000-0000-00000000a301';
   o2  constant uuid := '00000000-0000-0000-0000-00000000b301';
   adm constant uuid := '00000000-0000-0000-0000-00000000ad04';
-  rmsd uuid;
+  rmsd uuid; sim uuid;
   rid uuid; fid uuid; fid2 uuid; first_pub timestamptz;
   p text;
 begin
@@ -12,10 +12,11 @@ begin
   perform t.make_user(adm, 'flow-admin@example.org', 'admin');
   update public.profiles set display_name = 'Dr Flow' where id = o;
   select id into rmsd from public.analysis_types where slug = 'rmsd';
+  select id into sim from public.simulation_types where slug = 'protein-ligand-complex';
 
   perform t.login(o);
-  insert into public.records (owner_id, type_id, title, description, pdb_id, protein_name, molecules, force_field, authors)
-  values (o, rmsd, 'Flow record', 'First description', '2abc', 'Flow protein', '[{"kind":"ligand","name":"Flowmycin","resn":"LIG"}]', 'CHARMM36', array['A. Author'])
+  insert into public.records (owner_id, type_id, simulation_type_id, title, description, pdb_id, protein_name, molecules, force_field, authors)
+  values (o, rmsd, sim, 'Flow record', 'First description', '2abc', 'Flow protein', '[{"kind":"ligand","name":"Flowmycin","resn":"LIG"}]', 'CHARMM36', array['A. Author'])
   returning id into rid;
   p := o || '/' || rid || '/';
   insert into public.record_files (record_id, kind, filename, storage_path, size_bytes, parsed)
@@ -43,6 +44,8 @@ begin
   perform t.is((select title from public.public_records where slug = '2abc-lig'), 'Flow record', 'public sees the approved title');
   perform t.is((select type_slug from public.public_records where slug = '2abc-lig'), 'rmsd', 'type slug');
   perform t.is((select type_name from public.public_records where slug = '2abc-lig'), 'RMSD analysis', 'type name');
+  perform t.is((select sim_type_slug from public.public_records where slug = '2abc-lig'), 'protein-ligand-complex', 'simulation type slug');
+  perform t.is((select sim_type_name from public.public_records where slug = '2abc-lig'), 'Protein–ligand complex', 'simulation type name');
   perform t.is((select pdb_id from public.public_records where slug = '2abc-lig'), '2ABC', 'pdb id');
   perform t.is((select contributor from public.public_records where slug = '2abc-lig'), 'Dr Flow', 'contributor name');
   perform t.is((select tags from public.public_records where slug = '2abc-lig'), array['flow-tag'], 'tags');

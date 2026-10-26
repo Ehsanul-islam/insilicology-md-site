@@ -62,6 +62,12 @@ export default async function RecordPage({ params }: Props) {
           <div>
             <h2>Details</h2>
             <dl className="md-facts">
+              {run.simulation_type_slug && (
+                <>
+                  <dt>Simulation type</dt>
+                  <dd><Link href={`/simulation-types/${run.simulation_type_slug}`}>{run.simulation_type_name}</Link></dd>
+                </>
+              )}
               <dt>PDB entry</dt>
               <dd><Link href={`/pdb/${run.pdb_id.toLowerCase()}`}>{run.pdb_id}</Link></dd>
               <dt>Protein</dt>
