@@ -38,11 +38,23 @@ describe("mapPublicRecord", () => {
 
   it("builds figures from data and image files, ignoring structures and trajectories", () => {
     const kinds = (run.md_figures ?? []).map((f) => f.kind).sort();
-    expect(kinds).toEqual(["rmsd", "rmsf"].sort());
+    expect(kinds).toEqual(["rg", "rmsd", "rmsf"]);
     const rmsd = run.md_figures!.find((f) => f.kind === "rmsd")!;
     expect(rmsd.xvg_url).toMatch(/^\/api\/files\/[0-9a-f-]{36}$/);
     expect(rmsd.image_url).toMatch(/^\/api\/files\/[0-9a-f-]{36}$/);
     expect(rmsd.caption).toBe("Backbone RMSD");
+  });
+
+  it("lists the analyses and files of the record", () => {
+    expect(run.analyses?.map((a) => a.slug).sort()).toEqual(["radius-of-gyration", "rmsd", "rmsf"]);
+    expect(run.analyses?.every((a) => a.name)).toBe(true);
+    expect(run.files?.filter((f) => f.analysis_slug === null).map((f) => f.kind).sort()).toEqual(["pdb", "xtc"]);
+    expect(run.files?.find((f) => f.filename === "rmsf.xvg")?.analysis_slug).toBe("rmsf");
+  });
+
+  it("gives an admin-added analysis the generic figure kind instead of dropping it", () => {
+    const figs = figuresFor({ ...row, files: [{ ...row.files[0], figure_kind: null, analysis_slug: "lipid-order", analysis_name: "Lipid order", kind: "xvg" }] });
+    expect(figs.map((f) => f.kind)).toEqual(["other"]);
   });
 
   it("falls back to the type's figure kind for untagged data files", () => {

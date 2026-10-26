@@ -27,7 +27,7 @@ begin
   perform t.is((select status::text from public.records where id = rid), 'draft', 'new records are drafts');
   insert into public.records (owner_id, type_id, simulation_type_id, title, pdb_id, molecules) values (o1, rmsd, sim, 'Second TES run', '1AFS', '[{"kind":"ligand","resn":"TES"}]') returning id into rid2;
   perform t.is((select slug from public.records where id = rid2), '1afs-tes-2', 'slug collision is numbered');
-  insert into public.records (owner_id, type_id, simulation_type_id, title) values (o1, other, sim, 'Membrane thickness study') returning id into rid3;
+  insert into public.records (owner_id, type_id, simulation_type_id, title) values (o1, other, (select id from public.simulation_types where slug = 'coarse-grained'), 'Membrane thickness study') returning id into rid3;
   perform t.is((select slug from public.records where id = rid3), 'membrane-thickness-study', 'slug from title when there is no PDB ID');
   perform t.fails(format($q$update public.records set slug = 'mine' where id = %L$q$, rid), '42501', 'slug cannot be changed by the owner');
 
@@ -66,23 +66,28 @@ begin
   -- submitting: validation -------------------------------------------------------------------------
   perform t.login(o1);
   insert into public.records (owner_id, type_id, title, pdb_id) values (o1, rmsd, 'No simulation type yet', '4AAA') returning id into rid_nosim;
-  insert into public.record_files (record_id, kind, filename, storage_path, size_bytes) values (rid_nosim, 'xvg', 'a.xvg', o1 || '/' || rid_nosim || '/a.xvg', 10);
+  perform t.file(rid_nosim, 'xvg', 'a.xvg', 'rmsd', 10);
   perform t.fails(format($q$select public.submit_record(%L)$q$, rid_nosim), '23514', 'a simulation type is required to submit');
   begin perform public.submit_record(rid_nosim); exception when others then perform t.is(sqlerrm, 'choose a simulation type', 'the message asks for a simulation type'); end;
   perform t.fails(format($q$select public.submit_record(%L)$q$, rid), '23514', 'cannot submit without files');
+  begin perform public.submit_record(rid); exception when others then perform t.is(sqlerrm, 'add at least one analysis with its data files', 'the message asks for an analysis'); end;
   perform t.fails(format($q$insert into public.record_files (record_id, kind, filename, storage_path, size_bytes) values (%L, 'xvg', 'a.xvg', 'elsewhere/a.xvg', 10)$q$, rid), '23514', 'file path must be under owner/record');
-  insert into public.record_files (record_id, kind, filename, storage_path, size_bytes) values (rid, 'csv', 'rmsd.csv', o1 || '/' || rid || '/rmsd.csv', 1000);
+  perform t.file(rid, 'csv', 'rmsd.csv', 'rmsd', 1000);
   perform t.fails(format($q$select public.submit_record(%L)$q$, rid), '23514', 'RMSD needs an .xvg file');
-  insert into public.record_files (record_id, kind, filename, storage_path, size_bytes, caption) values (rid, 'xvg', 'rmsd.xvg', o1 || '/' || rid || '/rmsd.xvg', 5000, 'Backbone RMSD') returning id into fid;
+  begin perform public.submit_record(rid); exception when others then perform t.is(sqlerrm, 'RMSD analysis needs a .xvg file', 'the message names the analysis and the missing kind'); end;
+  fid := t.file(rid, 'xvg', 'rmsd.xvg', 'rmsd', 5000);
+  update public.record_files set caption = 'Backbone RMSD' where id = fid;
+  perform t.put(o1 || '/' || rid || '/x.exe', 10);
   perform t.fails(format($q$insert into public.record_files (record_id, kind, filename, storage_path, size_bytes) values (%L, 'exe', 'x.exe', %L, 10)$q$, rid, o1 || '/' || rid || '/x.exe'), '23514', 'unknown file kinds are rejected');
-  perform t.fails(format($q$insert into public.record_files (record_id, kind, filename, storage_path, size_bytes) values (%L, 'xvg', 'z.xvg', %L, 0)$q$, rid, o1 || '/' || rid || '/z.xvg'), '23514', 'empty files are rejected');
+  perform t.put(o1 || '/' || rid || '/z.xvg', 0);
+  perform t.fails(format($q$insert into public.record_files (record_id, kind, filename, storage_path, size_bytes, analysis_type_id) values (%L, 'xvg', 'z.xvg', %L, 0, %L)$q$, rid, o1 || '/' || rid || '/z.xvg', rmsd), '23514', 'empty files are rejected');
 
   -- a type that needs a structure rejects a record without a PDB ID
-  insert into public.record_files (record_id, kind, filename, storage_path, size_bytes) values (rid2, 'xvg', 'rmsd.xvg', o1 || '/' || rid2 || '/rmsd.xvg', 5000);
+  perform t.file(rid2, 'xvg', 'rmsd.xvg', 'rmsd', 5000);
   update public.records set pdb_id = null where id = rid2;
   perform t.fails(format($q$select public.submit_record(%L)$q$, rid2), '23514', 'structure types need a PDB ID');
   -- a type with no structure requirement does not
-  insert into public.record_files (record_id, kind, filename, storage_path, size_bytes) values (rid3, 'csv', 'thickness.csv', o1 || '/' || rid3 || '/thickness.csv', 500);
+  perform t.file(rid3, 'csv', 'thickness.csv', 'other', 500);
   perform public.submit_record(rid3);
   perform t.is((select status::text from public.records where id = rid3), 'pending', 'non-structure type submits without a PDB ID');
 

@@ -1,6 +1,7 @@
 import { ligandSlug } from "../../components/md/showcase/data/api";
 import { SAMPLE_PUBLISHED, sampleRunsFor } from "../../components/md/showcase/data/sample";
 import type { FigureKind, MdRun, PublishedPdb } from "../../components/md/showcase/data/types";
+import type { PlotData } from "../../components/md/pages/XvgPlot";
 import { createPublicClient } from "../supabase/public";
 import { typeForFigureKind } from "./analysis-types";
 import { cachedRead } from "./cache";
@@ -35,7 +36,7 @@ const dbRecords = cachedRead(
     let q = db.from("public_records").select("*");
     if (kind === "slug") q = q.eq("slug", value);
     if (kind === "pdb") q = q.eq("pdb_id", value);
-    if (kind === "type") q = q.eq("type_slug", value);
+    if (kind === "type") q = q.contains("analysis_slugs", [value]);
     if (kind === "simtype") q = q.eq("sim_type_slug", value);
     const { data, error } = await q.order("published_at", { ascending: false }).limit(limit);
     if (error) fail("records", error.message);
@@ -125,7 +126,7 @@ export async function listPublishedPdbs(): Promise<PublishedPdb[]> {
   return dbPdbs();
 }
 
-export type FileSeries = { file_id: string; parsed: { series?: [number, number][] } };
+export type FileSeries = { file_id: string; parsed: PlotData };
 
 const dbSeries = cachedRead(
   async (recordId: string): Promise<FileSeries[]> => {

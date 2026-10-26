@@ -49,12 +49,15 @@ export function CopyButton({ text, label, copiedLabel = "Copied", className = "m
 }
 
 /** Short human citation plus BibTeX and DOI. */
+/** `ligandLabel` is the ligand for records with a structure, or the whole subject (the title) without one. */
 export function CitationBox({ run, ligandLabel }: { run: MdRun; ligandLabel: string }) {
   const preId = `bib-${run.id}`;
   const doi = run.doi && !run.doi.startsWith("[") ? run.doi.replace(/^https?:\/\/doi\.org\//, "") : null;
   const year = run.published_at ? new Date(run.published_at).getFullYear() : "[YEAR]";
-  const short = `Insilicology (${year}). Molecular dynamics of ${run.pdb_id} with ${ligandLabel}. DOI ${doi ?? run.doi ?? "[DOI]"}`;
-  const bib = run.citation_bibtex || "[CITATION BIBTEX]";
+  const subject = run.pdb_id ? `${run.pdb_id} with ${ligandLabel}` : ligandLabel;
+  const doiText = doi ?? run.doi ?? (run.placeholder ? "[DOI]" : null);
+  const short = `Insilicology (${year}). Molecular dynamics of ${subject}.${doiText ? ` DOI ${doiText}` : ` ${run.slug ? `https://insilicology.com/simulations/${run.slug}` : ""}`}`.trim();
+  const bib = run.citation_bibtex || (run.placeholder ? "[CITATION BIBTEX]" : "");
   return (
     <div className="md-cite">
       <div className="md-cite__head">
@@ -71,15 +74,17 @@ export function CitationBox({ run, ligandLabel }: { run: MdRun; ligandLabel: str
           </>
         )}
       </p>
-      <details className="md-cite__bib">
-        <summary>BibTeX</summary>
-        <pre id={preId} tabIndex={0} aria-label="BibTeX citation">
-          {bib}
-        </pre>
-      </details>
+      {bib && (
+        <details className="md-cite__bib">
+          <summary>BibTeX</summary>
+          <pre id={preId} tabIndex={0} aria-label="BibTeX citation">
+            {bib}
+          </pre>
+        </details>
+      )}
       <div className="md-cite__actions">
         <CopyButton text={short} label="Copy citation" />
-        <CopyButton text={bib} label="Copy BibTeX" target={() => document.getElementById(preId)} />
+        {bib && <CopyButton text={bib} label="Copy BibTeX" target={() => document.getElementById(preId)} />}
       </div>
     </div>
   );

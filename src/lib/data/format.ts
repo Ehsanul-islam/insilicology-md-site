@@ -16,3 +16,11 @@ export function ligandsOf(run: MdRun) {
 export function complexUrl(run: MdRun) {
   return `${SITE_URL}${recordPath(run)}`;
 }
+
+/** "26 Oct 2026", independent of the server's locale so server and browser agree. */
+export function formatDate(iso: string | null | undefined) {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "";
+  return `${d.getUTCDate()} ${["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][d.getUTCMonth()]} ${d.getUTCFullYear()}`;
+}

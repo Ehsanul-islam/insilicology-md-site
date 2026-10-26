@@ -40,6 +40,25 @@ export type MdRun = {
   simulation_type_slug?: string | null;
   simulation_type_name?: string | null;
   license?: string | null;
+  /** Real records only: the analyses the record contains, its files, and the contributor's description. */
+  analyses?: { slug: string; name: string }[];
+  files?: MdRecordFile[];
+  description?: string | null;
+  software?: string | null;
+  methodology?: string | null;
+  authors?: string[];
+  contributor?: string | null;
+  tags?: string[];
+};
+
+/** A file of a published record. `analysis_slug` is null for supporting files (structures, trajectories ...). */
+export type MdRecordFile = {
+  id: string;
+  kind: string;
+  filename: string;
+  size_bytes: number | null;
+  caption: string | null;
+  analysis_slug: string | null;
 };
 
 /** One row per published PDB ID, for search suggestions. */

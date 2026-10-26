@@ -38,6 +38,10 @@ function contentSecurityPolicy() {
 const config: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  async redirects() {
+    // review notifications link to /dashboard/records/<id>; the editor lives under /simulations
+    return [{ source: "/dashboard/records/:id", destination: "/dashboard/simulations/:id", permanent: false }];
+  },
   async headers() {
     return [
       {

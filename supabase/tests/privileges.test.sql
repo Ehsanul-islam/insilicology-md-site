@@ -18,6 +18,7 @@ begin
     'public.post_child_changed()', 'public.record_child_changed()', 'public.record_files_check()',
     'public.profiles_guard()', 'public.records_before_write()', 'public.posts_before_write()',
     'public.tags_normalise()', 'public.touch_updated_at()',
+    'public.record_files_rules()', 'public.record_limits()',
     'public._log_review(text, uuid, text, text)', 'public._notify(uuid, text, text, text, text)',
     'public._record_snapshot(public.records)', 'public._post_snapshot(public.posts)'
   ] loop

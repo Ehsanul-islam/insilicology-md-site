@@ -76,6 +76,28 @@ begin
   if not coalesce(cond, false) then raise exception 'FAIL [%]', label; end if;
 end $$;
 
+-- What Storage does when an upload finishes: an object row with the size in its metadata. Runs as the
+-- function owner, so tests can stage objects for any user without going through the storage policies.
+create or replace function t.put(path text, size bigint default 1000) returns void
+language sql security definer as $$
+  insert into storage.objects (bucket_id, name, metadata) values ('record-files', path, jsonb_build_object('size', size))
+$$;
+grant execute on function t.put(text, bigint) to public;
+
+-- Stage the object and register the file in one go, as the current user. Returns the file id.
+create or replace function t.file(rid uuid, kind text, filename text, analysis text default null, size bigint default 1000, parsed jsonb default null)
+returns uuid language plpgsql as $$
+declare
+  path text := (select owner_id from public.records where id = rid)::text || '/' || rid || '/' || filename;
+  fid uuid;
+begin
+  perform t.put(path, size);
+  insert into public.record_files (record_id, kind, filename, storage_path, size_bytes, analysis_type_id, parsed)
+  values (rid, kind, filename, path, size, (select id from public.analysis_types where slug = analysis), parsed)
+  returning id into fid;
+  return fid;
+end $$;
+
 -- Create a user (the signup trigger makes the profile). Role is set as the superuser, like the README's first-admin SQL.
 create or replace function t.make_user(uid uuid, mail text, as_role public.user_role default 'user', as_status public.account_status default 'active')
 returns uuid language plpgsql as $$

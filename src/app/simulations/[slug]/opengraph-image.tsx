@@ -10,7 +10,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
   const run = await getRecord((await params).slug);
   return ogImage({
     kicker: "Simulation record",
-    title: run ? `${run.pdb_id} with ${ligandLabelOf(run)}` : "Simulation record",
+    title: run ? (run.pdb_id ? `${run.pdb_id} with ${ligandLabelOf(run)}` : run.title || "Simulation record") : "Simulation record",
     subtitle: run?.protein_name || undefined,
   });
 }

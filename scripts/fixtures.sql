@@ -12,13 +12,16 @@ begin
     '[{"kind":"ligand","name":"Testosterone","resn":"TES","pubchem_cid":6013},{"kind":"ligand","name":"NADP+","resn":"NAP"}]', 'GROMACS', '2024.2', 'CHARMM36', 100, 3, array['A. Author','B. Author'],
     '10.1000/example.1', 'https://example.org/paper', '@dataset{fixture, title={Fixture}}') returning id into rid;
   p := o || '/' || rid || '/';
-  insert into public.record_files (record_id, kind, filename, storage_path, size_bytes, caption, figure_kind) values
-    (rid, 'xvg', 'rmsd.xvg', p || 'rmsd.xvg', 5000, 'Backbone RMSD', 'rmsd'),
-    (rid, 'png', 'rmsd.png', p || 'rmsd.png', 90000, null, 'rmsd'),
-    (rid, 'xvg', 'rmsf.xvg', p || 'rmsf.xvg', 4000, null, 'rmsf'),
-    (rid, 'xvg', 'untagged.xvg', p || 'untagged.xvg', 3000, null, null),
-    (rid, 'pdb', 'start.pdb', p || 'start.pdb', 200000, null, null),
-    (rid, 'xtc', 'traj.xtc', p || 'traj.xtc', 900000, null, null);
+  -- t.file stages the Storage object the way an upload does, then registers the file
+  perform t.file(rid, 'xvg', 'rmsd.xvg', 'rmsd', 5000);
+  perform t.file(rid, 'png', 'rmsd.png', 'rmsd', 90000);
+  perform t.file(rid, 'xvg', 'rmsf.xvg', 'rmsf', 4000);
+  perform t.file(rid, 'xvg', 'rg.xvg', 'radius-of-gyration', 3000);
+  perform t.file(rid, 'pdb', 'start.pdb', null, 200000);
+  perform t.file(rid, 'xtc', 'traj.xtc', null, 900000);
+  update public.record_files set caption = 'Backbone RMSD', figure_kind = 'rmsd' where record_id = rid and filename = 'rmsd.xvg';
+  update public.record_files set figure_kind = 'rmsd' where record_id = rid and filename = 'rmsd.png';
+  update public.record_files set figure_kind = 'rmsf' where record_id = rid and filename = 'rmsf.xvg';
   perform public.ensure_tags(array['GROMACS','CHARMM36']);
   insert into public.record_tags (record_id, tag_id) select rid, id from public.tags where slug in ('gromacs','charmm36');
   perform public.submit_record(rid);

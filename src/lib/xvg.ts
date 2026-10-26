@@ -76,3 +76,44 @@ export function seriesPath(points: [number, number][], width: number, height: nu
   const path = points.map(([x, y], i) => `${i ? "L" : "M"}${sx(x).toFixed(1)} ${sy(y).toFixed(1)}`).join("");
   return { path, xMin, xMax, yMin, yMax };
 }
+
+/**
+ * Plain numeric tables (.csv, .dat, .txt): comma, tab or space separated, `#` comments, an optional header
+ * row whose names become the axis label and legends.
+ */
+export function parseTable(text: string): Xvg {
+  const lines = text.split(/\r?\n/).map((l) => l.trim()).filter((l) => l && !l.startsWith("#") && !l.startsWith("@"));
+  const split = (l: string) => l.split(/\s*[,;\t]\s*|\s+/).filter((c) => c !== "");
+  let header: string[] = [];
+  if (lines.length && !split(lines[0]).every((c) => Number.isFinite(Number(c)))) header = split(lines.shift()!);
+  const out = parseXvg(lines.map((l) => split(l).join(" ")).join("\n"));
+  if (header.length) {
+    out.xLabel = header[0];
+    if (out.series.length === 1) out.yLabel = header[1] ?? "";
+    out.series.forEach((s, i) => (s.legend = header[i + 1] ?? s.legend));
+  }
+  return out;
+}
+
+/** What is stored in `record_files.parsed`: at most 8 series of at most `max` points, rounded to 5 significant digits. */
+export function toPlotData(x: Xvg, max = 400): Xvg | null {
+  const round = (v: number) => Number(v.toPrecision(5));
+  const series = x.series
+    .filter((s) => s.points.length > 1)
+    .slice(0, 8)
+    .map((s) => ({ legend: s.legend.slice(0, 80), points: downsample(s.points, max).map(([a, b]) => [round(a), round(b)] as [number, number]) }));
+  if (!series.length) return null;
+  return { title: x.title.slice(0, 200), xLabel: x.xLabel.slice(0, 120), yLabel: x.yLabel.slice(0, 120), series };
+}
+
+/** About `count` round tick values covering [min, max] (1, 2 or 5 times a power of ten apart). */
+export function niceTicks(min: number, max: number, count = 5): number[] {
+  if (!Number.isFinite(min) || !Number.isFinite(max)) return [];
+  if (min === max) return [min];
+  const raw = (max - min) / Math.max(count - 1, 1);
+  const mag = 10 ** Math.floor(Math.log10(raw));
+  const step = ([1, 2, 5, 10].find((m) => m * mag >= raw) ?? 10) * mag;
+  const ticks: number[] = [];
+  for (let v = Math.ceil(min / step) * step; v <= max + step * 1e-9; v += step) ticks.push(Number(v.toPrecision(12)));
+  return ticks;
+}

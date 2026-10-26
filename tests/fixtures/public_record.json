@@ -1,4 +1,14 @@
 {
+  "analysis_names": [
+    "RMSD analysis",
+    "RMSF analysis",
+    "Radius of gyration (Rg)"
+  ],
+  "analysis_slugs": [
+    "rmsd",
+    "rmsf",
+    "radius-of-gyration"
+  ],
   "authors": [
     "A. Author",
     "B. Author"
@@ -9,24 +19,30 @@
   "doi": "10.1000/example.1",
   "files": [
     {
-      "caption": "Backbone RMSD",
-      "figure_kind": "rmsd",
-      "filename": "rmsd.xvg",
-      "id": "22222222-2222-2222-2222-000000000001",
-      "kind": "xvg",
-      "size_bytes": 5000,
-      "storage_path": "OWNER/RECORD/rmsd.xvg"
-    },
-    {
+      "analysis_name": "RMSD analysis",
+      "analysis_slug": "rmsd",
       "caption": null,
       "figure_kind": "rmsd",
       "filename": "rmsd.png",
-      "id": "22222222-2222-2222-2222-000000000002",
+      "id": "22222222-2222-2222-2222-000000000001",
       "kind": "png",
       "size_bytes": 90000,
       "storage_path": "OWNER/RECORD/rmsd.png"
     },
     {
+      "analysis_name": "Radius of gyration (Rg)",
+      "analysis_slug": "radius-of-gyration",
+      "caption": null,
+      "figure_kind": null,
+      "filename": "rg.xvg",
+      "id": "22222222-2222-2222-2222-000000000002",
+      "kind": "xvg",
+      "size_bytes": 3000,
+      "storage_path": "OWNER/RECORD/rg.xvg"
+    },
+    {
+      "analysis_name": "RMSF analysis",
+      "analysis_slug": "rmsf",
       "caption": null,
       "figure_kind": "rmsf",
       "filename": "rmsf.xvg",
@@ -36,31 +52,37 @@
       "storage_path": "OWNER/RECORD/rmsf.xvg"
     },
     {
+      "analysis_name": null,
+      "analysis_slug": null,
+      "caption": null,
+      "figure_kind": null,
+      "filename": "start.pdb",
+      "id": "22222222-2222-2222-2222-000000000004",
+      "kind": "pdb",
+      "size_bytes": 200000,
+      "storage_path": "OWNER/RECORD/start.pdb"
+    },
+    {
+      "analysis_name": null,
+      "analysis_slug": null,
       "caption": null,
       "figure_kind": null,
       "filename": "traj.xtc",
-      "id": "22222222-2222-2222-2222-000000000004",
+      "id": "22222222-2222-2222-2222-000000000005",
       "kind": "xtc",
       "size_bytes": 900000,
       "storage_path": "OWNER/RECORD/traj.xtc"
     },
     {
-      "caption": null,
-      "figure_kind": null,
-      "filename": "untagged.xvg",
-      "id": "22222222-2222-2222-2222-000000000005",
-      "kind": "xvg",
-      "size_bytes": 3000,
-      "storage_path": "OWNER/RECORD/untagged.xvg"
-    },
-    {
-      "caption": null,
-      "figure_kind": null,
-      "filename": "start.pdb",
+      "analysis_name": "RMSD analysis",
+      "analysis_slug": "rmsd",
+      "caption": "Backbone RMSD",
+      "figure_kind": "rmsd",
+      "filename": "rmsd.xvg",
       "id": "22222222-2222-2222-2222-000000000006",
-      "kind": "pdb",
-      "size_bytes": 200000,
-      "storage_path": "OWNER/RECORD/start.pdb"
+      "kind": "xvg",
+      "size_bytes": 5000,
+      "storage_path": "OWNER/RECORD/rmsd.xvg"
     }
   ],
   "force_field": "CHARMM36",

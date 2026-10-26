@@ -109,6 +109,25 @@ functions as callable by signed-in users (WARN). Both are intentional: the views
 anonymous visitors can read approved content without any access to the underlying tables, and the helper and
 review functions each check who is calling. Trigger and internal functions are locked down (`advisor_fixes` migration).
 
+### Dashboard: uploading simulations
+
+Signed-in users open **Dashboard > My simulations > New simulation**. A record has one simulation type and any
+number of analyses (RMSD, RMSF ...), each with its own files. The editor shows a checklist that mirrors the rules
+the database enforces on submit. Uploads go from the browser straight to Storage (a server action checks the file
+first and issues a one-time upload URL), then the server reads `.xvg`/`.csv` data to build the plots shown on the
+public record page. The record's web address is fixed when it is created (PDB ID + ligand, or the title).
+
+Until the admin dashboard (Milestone 6) exists, approve a submitted record in the SQL Editor. The review functions
+read the administrator from the JWT claim, so set it first:
+
+```sql
+select set_config('request.jwt.claim.sub', '<your admin user id>', true);
+select public.approve_record('<record id>');
+-- or: select public.request_changes_record('<record id>', 'what to fix');
+```
+
+Pending records: `select id, title, owner_id from public.records where status = 'pending';`
+
 ### Database tests
 
 ```bash

@@ -19,8 +19,7 @@ begin
   values (o, rmsd, sim, 'Flow record', 'First description', '2abc', 'Flow protein', '[{"kind":"ligand","name":"Flowmycin","resn":"LIG"}]', 'CHARMM36', array['A. Author'])
   returning id into rid;
   p := o || '/' || rid || '/';
-  insert into public.record_files (record_id, kind, filename, storage_path, size_bytes, parsed)
-  values (rid, 'xvg', 'rmsd.xvg', p || 'rmsd.xvg', 5000, '{"series":[[0,0],[1,1]]}') returning id into fid;
+  fid := t.file(rid, 'xvg', 'rmsd.xvg', 'rmsd', 5000, '{"series":[[0,0],[1,1]]}');
   perform public.ensure_tags(array['Flow Tag']);
   insert into public.record_tags (record_id, tag_id) select rid, id from public.tags where slug = 'flow-tag';
   perform public.submit_record(rid);
@@ -95,7 +94,7 @@ begin
   perform t.anon();
   perform t.is((select title from public.public_records where slug = '2abc-lig'), 'Flow record', 'public still sees the approved title');
   perform t.login(o);
-  insert into public.record_files (record_id, kind, filename, storage_path, size_bytes) values (rid, 'xvg', 'rmsf.xvg', p || 'rmsf.xvg', 4000) returning id into fid2;
+  fid2 := t.file(rid, 'xvg', 'rmsf.xvg', 'rmsf', 4000);
   perform t.anon();
   perform t.is((select jsonb_array_length(files) from public.public_records where slug = '2abc-lig'), 1, 'new file is not public yet');
   perform t.login(o);

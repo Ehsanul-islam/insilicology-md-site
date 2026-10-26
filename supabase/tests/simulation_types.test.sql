@@ -67,7 +67,7 @@ begin
   perform t.login(u);
   insert into public.records (owner_id, type_id, simulation_type_id, title, pdb_id, molecules)
     values (u, rmsd, sim_new, 'Archived type record', '5AAA', '[{"kind":"ligand","resn":"LIG"}]') returning id into rid;
-  insert into public.record_files (record_id, kind, filename, storage_path, size_bytes) values (rid, 'xvg', 'a.xvg', u || '/' || rid || '/a.xvg', 10);
+  perform t.file(rid, 'xvg', 'a.xvg', 'rmsd', 10);
   perform t.fails(format($q$select public.submit_record(%L)$q$, rid), '23514', 'an archived simulation type cannot be used to submit');
   perform t.is(t.affected(format($q$update public.records set simulation_type_id = %L where id = %L$q$, apo, rid)), 1::bigint, 'the owner changes the simulation type');
   perform public.submit_record(rid);

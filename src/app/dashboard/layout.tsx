@@ -1,8 +1,17 @@
+import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { DashboardNav } from "../../components/md/dashboard/DashboardNav";
 
-// account pages are private: keep them out of search results
-export const metadata = { robots: { index: false, follow: false } };
+export const metadata: Metadata = {
+  title: { default: "Dashboard", template: "%s · Dashboard" },
+  robots: { index: false, follow: false },
+};
 
-export default function Layout({ children }: { children: ReactNode }) {
-  return children;
+export default function DashboardLayout({ children }: { children: ReactNode }) {
+  return (
+    <>
+      <DashboardNav />
+      {children}
+    </>
+  );
 }

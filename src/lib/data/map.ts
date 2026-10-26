@@ -1,4 +1,4 @@
-import type { FigureKind, MdFigure, MdRun, PublishedPdb } from "../../components/md/showcase/data/types";
+import type { FigureKind, MdFigure, MdRecordFile, MdRun, PublishedPdb } from "../../components/md/showcase/data/types";
 import { ANALYSIS_TYPES, type AnalysisType } from "./analysis-types";
 import type { SimulationType } from "./simulation-types";
 import type { BlogPost } from "./posts";
@@ -28,7 +28,19 @@ export type PublicRecordRow = {
   citation_bibtex: string | null;
   license: string | null;
   tags: string[];
-  files: { id: string; kind: string; filename: string; storage_path: string; caption: string | null; figure_kind: string | null }[];
+  files: {
+    id: string;
+    kind: string;
+    filename: string;
+    storage_path: string;
+    size_bytes?: number | null;
+    caption: string | null;
+    figure_kind: string | null;
+    analysis_slug?: string | null;
+    analysis_name?: string | null;
+  }[];
+  analysis_slugs?: string[] | null;
+  analysis_names?: string[] | null;
   contributor: string | null;
   published_at: string | null;
   updated_at: string | null;
@@ -96,6 +108,10 @@ export function ligandsOf(molecules: PublicRecordRow["molecules"]) {
 }
 
 /** Group a record's files into figures: one per analysis kind, with its data file and image when present. */
+/** The showcase's fixed figure kind for an analysis slug; admin-added analyses have none and fall back to "other". */
+const figureKindOfAnalysis = (slug: string | null | undefined): FigureKind | undefined =>
+  slug ? ANALYSIS_TYPES.find((t) => t.slug === slug)?.figureKind ?? "other" : undefined;
+
 export function figuresFor(row: Pick<PublicRecordRow, "id" | "files" | "type_slug">): MdFigure[] {
   const typeKind = ANALYSIS_TYPES.find((t) => t.slug === row.type_slug)?.figureKind;
   const groups = new Map<FigureKind, MdFigure>();
@@ -103,7 +119,7 @@ export function figuresFor(row: Pick<PublicRecordRow, "id" | "files" | "type_slu
     const isData = DATA_KINDS.has(f.kind);
     const isImage = IMAGE_KINDS.has(f.kind);
     if (!isData && !isImage) continue; // structures, trajectories and archives are downloads, not figures
-    const kind = isFigureKind(f.figure_kind) ? f.figure_kind : typeKind;
+    const kind = isFigureKind(f.figure_kind) ? f.figure_kind : figureKindOfAnalysis(f.analysis_slug) ?? typeKind;
     if (!kind) continue;
     const fig =
       groups.get(kind) ??
@@ -146,6 +162,16 @@ export function mapPublicRecord(row: PublicRecordRow): MdRun {
     simulation_type_slug: row.sim_type_slug,
     simulation_type_name: row.sim_type_name,
     license: row.license,
+    analyses: (row.analysis_slugs ?? []).map((slug, i) => ({ slug, name: row.analysis_names?.[i] ?? slug })),
+    files: (row.files ?? []).map(
+      (f): MdRecordFile => ({ id: f.id, kind: f.kind, filename: f.filename, size_bytes: f.size_bytes ?? null, caption: f.caption, analysis_slug: f.analysis_slug ?? null }),
+    ),
+    description: row.description,
+    software: [row.software, row.software_version].filter(Boolean).join(" ") || null,
+    methodology: row.methodology,
+    authors: row.authors ?? [],
+    contributor: row.contributor,
+    tags: row.tags ?? [],
   };
 }
 

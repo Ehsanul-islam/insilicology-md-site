@@ -11,13 +11,17 @@ export function RecordCards({ runs }: { runs: MdRun[] }) {
         <li key={r.id}>
           <Link className="md-card" href={recordPath(r)}>
             <span className="md-card__kicker">
-              PDB {r.pdb_id}
-              {r.simulation_type_name ? ` · ${r.simulation_type_name}` : ""}
+              {[r.pdb_id && `PDB ${r.pdb_id}`, r.simulation_type_name].filter(Boolean).join(" · ") || "Simulation"}
               {r.placeholder ? " · preview" : ""}
             </span>
-            <h3 className="md-card__title">{ligandLabelOf(r)}</h3>
+            <h3 className="md-card__title">{r.pdb_id ? ligandLabelOf(r) : r.title}</h3>
             <p className="md-card__text">
-              {r.protein_name || "Protein"} with {displayResn(r.ligand_resn || "ligand")}. {r.md_figures?.length ?? 0} analysis figures.
+              {r.pdb_id
+                ? `${r.protein_name || "Protein"} with ${displayResn(r.ligand_resn || "ligand")}. `
+                : r.protein_name
+                  ? `${r.protein_name}. `
+                  : ""}
+              {r.analyses ? `${r.analyses.length} ${r.analyses.length === 1 ? "analysis" : "analyses"}.` : `${r.md_figures?.length ?? 0} analysis figures.`}
             </p>
             <span className="md-card__more">View simulation →</span>
           </Link>
