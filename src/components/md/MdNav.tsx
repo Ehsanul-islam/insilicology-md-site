@@ -48,7 +48,7 @@ export function MdNav({ theme, onToggleTheme }: { theme: MdTheme; onToggleTheme:
 
   return (
     <header className="md-nav">
-      <nav className="md-wrap" aria-label="MD simulation service">
+      <nav className="md-wrap" aria-label="MD simulation database">
         <div className="md-nav-row">
           <Link className="md-brand" href="/" aria-label="Insilicology home">
             <span className="md-brand-mark" aria-hidden="true">─◆─</span> Insilicology

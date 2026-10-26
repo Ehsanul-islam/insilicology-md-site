@@ -17,7 +17,7 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://insilicology.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: { default: "Molecular Dynamics Simulation Service | Insilicology", template: "%s | Insilicology" },
+  title: { default: "Molecular Dynamics Simulation Database | Insilicology", template: "%s | Insilicology" },
   description:
     "Protein–ligand, apo/mutant, protein–protein and membrane MD simulations with GROMACS and CHARMM36, delivered with analysis, publication figures and a citable methods section.",
 };

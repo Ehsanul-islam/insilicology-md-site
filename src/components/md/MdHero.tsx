@@ -5,11 +5,11 @@ export function MdHero({ ssrFrame }: { ssrFrame?: string }) {
     <section className="md-hero" aria-labelledby="md-hero-title">
       <div className="md-wrap md-grid">
         <div className="md-hero-copy">
-          <p className="md-label">─◆─ 00 · MD simulation service</p>
-          <h1 id="md-hero-title" className="md-display">Molecular Dynamics Simulation Service</h1>
+          <p className="md-label">─◆─ 00 · MD simulation database</p>
+          <h1 id="md-hero-title" className="md-display">Molecular Dynamics Simulation Database</h1>
           <p className="md-lead">
-            Set up, run and analyse your protein–ligand system end to end, delivered as trajectories, publication
-            figures and a methods section you can cite.
+            Search published molecular dynamics results by PDB ID or simulation type: RMSD, RMSF and other analyses,
+            with the data to download and a citation you can use.
           </p>
           <div className="md-ctas">
             <a className="md-btn md-btn-primary" href="#contact">

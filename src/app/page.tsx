@@ -7,7 +7,7 @@ import { pageMetadata } from "../lib/seo";
 import { HomeSections } from "../components/md/pages/HomeSections";
 
 export const metadata = pageMetadata({
-  title: "Molecular Dynamics Simulation Service | Insilicology",
+  title: "Molecular Dynamics Simulation Database | Insilicology",
   description:
     "Protein–ligand, apo/mutant, protein–protein and membrane MD simulations with GROMACS and CHARMM36, plus a searchable database of simulation results by PDB ID and simulation type.",
   path: "/",
