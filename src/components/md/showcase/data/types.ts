@@ -32,6 +32,11 @@ export type MdRun = {
   md_figures?: MdFigure[];
   /** True only for layout-preview placeholder rows; never set for real data. */
   placeholder?: boolean;
+  /** Set on records read from the database. */
+  slug?: string;
+  title?: string;
+  type_slug?: string | null;
+  license?: string | null;
 };
 
 /** One row per published PDB ID, for search suggestions. */

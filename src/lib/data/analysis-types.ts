@@ -172,6 +172,40 @@ export const ANALYSIS_TYPES: AnalysisType[] = [
   },
 ];
 
+/**
+ * Upload rules per type: which file kinds the form accepts, which are required, the size limit, and
+ * which optional form sections must be filled in. Seeded into `analysis_types.file_rules` and
+ * `field_schema`; admins can change them afterwards. A record always needs at least one file.
+ */
+export type TypeRules = {
+  allowed: string[];
+  required: string[];
+  maxMb: number;
+  fieldSchema: { citation: "required" | "optional"; molecules: "required" | "optional" };
+};
+
+const DOCS = ["png", "svg", "pdf"];
+const STRUCTURE = ["pdb", "gro"];
+
+export const TYPE_RULES: Record<string, TypeRules> = {
+  rmsd: { allowed: ["xvg", "csv", "txt", "dat", ...DOCS, ...STRUCTURE], required: ["xvg"], maxMb: 50, fieldSchema: { citation: "optional", molecules: "required" } },
+  rmsf: { allowed: ["xvg", "csv", "txt", "dat", ...DOCS, ...STRUCTURE], required: ["xvg"], maxMb: 50, fieldSchema: { citation: "optional", molecules: "required" } },
+  "radius-of-gyration": { allowed: ["xvg", "csv", "txt", "dat", ...DOCS, ...STRUCTURE], required: ["xvg"], maxMb: 50, fieldSchema: { citation: "optional", molecules: "required" } },
+  sasa: { allowed: ["xvg", "csv", "txt", "dat", ...DOCS, ...STRUCTURE], required: ["xvg"], maxMb: 50, fieldSchema: { citation: "optional", molecules: "required" } },
+  "hydrogen-bonds": { allowed: ["xvg", "csv", "txt", "dat", "xpm", ...DOCS, ...STRUCTURE], required: ["xvg"], maxMb: 50, fieldSchema: { citation: "optional", molecules: "required" } },
+  "contact-map": { allowed: ["xvg", "csv", "txt", "dat", "xpm", ...DOCS, ...STRUCTURE], required: [], maxMb: 50, fieldSchema: { citation: "optional", molecules: "required" } },
+  "mm-pbsa": { allowed: ["csv", "dat", "txt", "xvg", "itp", ...DOCS, ...STRUCTURE], required: [], maxMb: 50, fieldSchema: { citation: "optional", molecules: "required" } },
+  pca: { allowed: ["xvg", "xpm", "csv", "dat", "txt", ...DOCS, ...STRUCTURE], required: [], maxMb: 100, fieldSchema: { citation: "optional", molecules: "required" } },
+  "free-energy-landscape": { allowed: ["xpm", "xvg", "csv", "dat", "txt", ...DOCS, ...STRUCTURE], required: [], maxMb: 100, fieldSchema: { citation: "optional", molecules: "required" } },
+  dccm: { allowed: ["csv", "dat", "txt", "xpm", ...DOCS, ...STRUCTURE], required: [], maxMb: 50, fieldSchema: { citation: "optional", molecules: "required" } },
+  other: {
+    allowed: ["xvg", "csv", "txt", "dat", "xpm", "pdb", "gro", "xtc", "trr", "tpr", "mol2", "itp", ...DOCS, "zip", "other"],
+    required: [],
+    maxMb: 500,
+    fieldSchema: { citation: "optional", molecules: "optional" },
+  },
+};
+
 /** Lower-case and strip everything but letters and digits, so "MM/PBSA" and "mm pbsa" compare equal. */
 export function normaliseKey(s: string) {
   return s.toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "");
@@ -194,6 +228,8 @@ export function suggestAnalysisTypes(query: string, limit = 8) {
   if (!k) return ANALYSIS_TYPES.slice(0, limit);
   return ANALYSIS_TYPES.filter((t) => [t.slug, t.name, ...t.aliases].some((a) => normaliseKey(a).includes(k))).slice(0, limit);
 }
+
+export const typeFigureKind = (slug: string | null | undefined) => ANALYSIS_TYPES.find((t) => t.slug === slug)?.figureKind;
 
 export function typeForFigureKind(kind: FigureKind) {
   return ANALYSIS_TYPES.find((t) => t.figureKind === kind);

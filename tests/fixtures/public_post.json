@@ -1,0 +1,20 @@
+{
+  "author_name": "Dr Fixture",
+  "category_name": "Methods",
+  "category_slug": "methods",
+  "content_md": "Body text. Body text. Body text. Body text. Body text. Body text. Body text. Body text. Body text. Body text. Body text. Body text. Body text. Body text. Body text. Body text. Body text. Body text. Body text. Body text. Body text. Body text. Body text. Body text. Body text. Body text. Body text. Body text. Body text. Body text. Body text. Body text. Body text. Body text. Body text. Body text. Body text. Body text. Body text. Body text. ",
+  "excerpt": "A practical walkthrough of the force field setup.",
+  "featured_image_path": null,
+  "id": "33333333-3333-3333-3333-333333333333",
+  "published_at": "2026-10-26T12:00:00+00:00",
+  "refs": [
+    {
+      "text": "Huang 2013",
+      "url": "https://doi.org/10.1002/jcc.23354"
+    }
+  ],
+  "slug": "setting-up-charmm36-in-gromacs",
+  "tags": [],
+  "title": "Setting up CHARMM36 in GROMACS",
+  "updated_at": "2026-10-26T12:00:00+00:00"
+}

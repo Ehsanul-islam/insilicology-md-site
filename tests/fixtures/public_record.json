@@ -1,0 +1,107 @@
+{
+  "authors": [
+    "A. Author",
+    "B. Author"
+  ],
+  "citation_bibtex": "@dataset{fixture, title={Fixture}}",
+  "contributor": "Dr Fixture",
+  "description": "Backbone and ligand RMSD over 100 ns.",
+  "doi": "10.1000/example.1",
+  "files": [
+    {
+      "caption": null,
+      "figure_kind": "rmsd",
+      "filename": "rmsd.png",
+      "id": "22222222-2222-2222-2222-000000000001",
+      "kind": "png",
+      "parsed": null,
+      "size_bytes": 90000,
+      "storage_path": "OWNER/RECORD/rmsd.png"
+    },
+    {
+      "caption": null,
+      "figure_kind": null,
+      "filename": "start.pdb",
+      "id": "22222222-2222-2222-2222-000000000002",
+      "kind": "pdb",
+      "parsed": null,
+      "size_bytes": 200000,
+      "storage_path": "OWNER/RECORD/start.pdb"
+    },
+    {
+      "caption": null,
+      "figure_kind": null,
+      "filename": "traj.xtc",
+      "id": "22222222-2222-2222-2222-000000000003",
+      "kind": "xtc",
+      "parsed": null,
+      "size_bytes": 900000,
+      "storage_path": "OWNER/RECORD/traj.xtc"
+    },
+    {
+      "caption": "Backbone RMSD",
+      "figure_kind": "rmsd",
+      "filename": "rmsd.xvg",
+      "id": "22222222-2222-2222-2222-000000000004",
+      "kind": "xvg",
+      "parsed": null,
+      "size_bytes": 5000,
+      "storage_path": "OWNER/RECORD/rmsd.xvg"
+    },
+    {
+      "caption": null,
+      "figure_kind": "rmsf",
+      "filename": "rmsf.xvg",
+      "id": "22222222-2222-2222-2222-000000000005",
+      "kind": "xvg",
+      "parsed": null,
+      "size_bytes": 4000,
+      "storage_path": "OWNER/RECORD/rmsf.xvg"
+    },
+    {
+      "caption": null,
+      "figure_kind": null,
+      "filename": "untagged.xvg",
+      "id": "22222222-2222-2222-2222-000000000006",
+      "kind": "xvg",
+      "parsed": null,
+      "size_bytes": 3000,
+      "storage_path": "OWNER/RECORD/untagged.xvg"
+    }
+  ],
+  "force_field": "CHARMM36",
+  "id": "11111111-1111-1111-1111-111111111111",
+  "length_ns": 100,
+  "license": "CC-BY-4.0",
+  "methodology": null,
+  "molecules": [
+    {
+      "kind": "ligand",
+      "name": "Testosterone",
+      "pubchem_cid": 6013,
+      "resn": "TES"
+    },
+    {
+      "kind": "ligand",
+      "name": "NADP+",
+      "resn": "NAP"
+    }
+  ],
+  "paper_url": "https://example.org/paper",
+  "pdb_id": "1AFS",
+  "project": null,
+  "protein_name": "3-alpha-hydroxysteroid dehydrogenase",
+  "published_at": "2026-10-26T12:00:00+00:00",
+  "replicas": 3,
+  "slug": "1afs-tes",
+  "software": "GROMACS",
+  "software_version": "2024.2",
+  "tags": [
+    "charmm36",
+    "gromacs"
+  ],
+  "title": "Testosterone in 3-alpha-HSD",
+  "type_name": "RMSD analysis",
+  "type_slug": "rmsd",
+  "updated_at": "2026-10-26T12:00:00+00:00"
+}
