@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useRef } from "react";
 import type { OrderedFigure } from "./data/figures";
 import type { MdRun } from "./data/types";

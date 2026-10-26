@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { AsciiMolecule } from "../AsciiMolecule";
 import { SearchLens, type LensMode } from "../ascii/SearchLens";

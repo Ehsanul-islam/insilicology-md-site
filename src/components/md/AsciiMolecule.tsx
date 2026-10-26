@@ -1,4 +1,7 @@
+"use client";
+
 import { useEffect, useRef, useState } from "react";
+import { useMdThemeValue } from "./useMdTheme";
 import { mountAscii, type AsciiFocus, type AsciiHandle } from "./asciiEngine";
 
 export interface AsciiMoleculeProps {
@@ -13,6 +16,8 @@ export interface AsciiMoleculeProps {
   label?: string;
   /** Current theme, so glyph tones follow the toggle. */
   theme?: string;
+  /** Pre-rendered glyph frame shown until the live render is ready (and as the no-WebGL fallback). */
+  ssrFrame?: string;
   className?: string;
 }
 
@@ -26,12 +31,15 @@ export function AsciiMolecule({
   cell = 4,
   autoSpin = true,
   label,
-  theme,
+  theme: themeProp,
+  ssrFrame,
   className,
 }: AsciiMoleculeProps) {
+  const ctxTheme = useMdThemeValue();
+  const theme = themeProp ?? ctxTheme;
   const ref = useRef<HTMLDivElement>(null);
   const handle = useRef<AsciiHandle | null>(null);
-  const [fallback, setFallback] = useState<string | null>(null);
+  const [fallback, setFallback] = useState<string | null>(ssrFrame ?? null);
   const [cols, rows] = size;
 
   useEffect(() => {
@@ -48,7 +56,9 @@ export function AsciiMolecule({
       cell,
       autoSpin,
       label,
+      onReady: () => setFallback(null),
       onFallback: () => {
+        if (ssrFrame) return;
         fetch(`/structures/${id}-${focus}.txt`)
           .then((r) => (r.ok ? r.text() : ""))
           .then((t) => setFallback(t || " "))

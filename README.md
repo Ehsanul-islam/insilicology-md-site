@@ -2,14 +2,22 @@
 
 Hero section with a live halftone ASCII protein (PDB 1HVR, HIV-1 protease + XK2).
 
+Built with Next.js (App Router) + React 19, deployed on Vercel.
+
 ```
 npm install
-npm run dev      # http://localhost:8080
-npm run build    # production build in dist/
+npm run dev        # http://localhost:8080
+npm run build      # production build in .next/
+npm run start      # serve the production build
+npm run typecheck
 ```
+
+Optional env var: `NEXT_PUBLIC_SITE_URL` (canonical site URL, defaults to https://insilicology.com).
 
 ## Where things are
 
+- `src/app/` — Next.js routes (`layout.tsx`, `page.tsx`); pages are server-rendered
+- `src/components/md/MdShell.tsx` — client shell: theme state, skip link, nav
 - `src/components/md/MdHero.tsx` — hero section (headline, CTAs, ASCII frame)
 - `src/components/md/MdNav.tsx` — top navigation, theme toggle, mobile menu
 - `src/components/md/AsciiMolecule.tsx` — `<AsciiMolecule pdbId ligandResn focus zoom size autoSpin />`

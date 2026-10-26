@@ -1,3 +1,5 @@
+"use client";
+
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { IS_PREVIEW, SITE_URL, ligandSlug, requestDownloadBundle } from "./data/api";
 import { groupsFor, orderFigures, type FigureGroup } from "./data/figures";

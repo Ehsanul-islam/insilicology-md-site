@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useRef } from "react";
 import type { FigureKind } from "./data/types";
 import { FIGURE_META } from "./data/figures";

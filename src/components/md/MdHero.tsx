@@ -1,6 +1,6 @@
 import { AsciiMolecule } from "./AsciiMolecule";
 
-export function MdHero({ theme }: { theme: string }) {
+export function MdHero({ ssrFrame }: { ssrFrame?: string }) {
   return (
     <section className="md-hero" aria-labelledby="md-hero-title">
       <div className="md-wrap md-grid">
@@ -33,7 +33,7 @@ export function MdHero({ theme }: { theme: string }) {
             size={[140, 140]}
             cell={4}
             autoSpin
-            theme={theme}
+            ssrFrame={ssrFrame}
             label="HIV-1 protease dimer with the cyclic urea inhibitor XK2, PDB 1HVR"
           />
           <figcaption className="md-sr">

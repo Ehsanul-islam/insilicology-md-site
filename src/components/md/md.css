@@ -9,7 +9,8 @@
   --md-ink-faint: #6a6a6a; /* tertiary text, 5.4:1 on bg */
   color-scheme: light;
 }
-.md-page[data-theme="dark"] {
+.md-page[data-theme="dark"],
+html[data-theme="dark"] .md-page {
   --md-gray-1: #0e0e0e; --md-gray-2: #161616; --md-gray-3: #1e1e1e; --md-gray-4: #262626;
   --md-gray-5: #2e2e2e; --md-gray-6: #373737; --md-gray-7: #444444; --md-gray-8: #5c5c5c;
   --md-gray-9: #777777; --md-gray-10: #858585; --md-gray-11: #b2b2b2; --md-gray-12: #ededed;
@@ -98,7 +99,7 @@
   --md-glyph-gamma: 0.4; --md-glyph-min: 2; --md-glyph-fade: 0.15;
   --md-glyph-weight: 700; --md-glyph-scale: 1.4;
 }
-.md-page[data-theme="dark"] :is(.md-hero-art, .md-glyphs) {
+:is(.md-page[data-theme="dark"], html[data-theme="dark"] .md-page) :is(.md-hero-art, .md-glyphs) {
   --md-glyph-lig: #6ea8ff; --md-glyph-hi: #d4ff3f; --md-glyph-mid: #a3d930; --md-glyph-lo: #6b8f1a;
   --md-glyph-gamma: 0.55; --md-glyph-min: 1; --md-glyph-fade: 0.55;
 }

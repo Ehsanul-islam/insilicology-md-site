@@ -12,7 +12,7 @@ import { SAMPLE_PUBLISHED, sampleRunsFor } from "./sample";
 /** True while the showcase serves sample data (no backend connected). */
 export const IS_PREVIEW = true;
 
-export const SITE_URL: string = import.meta.env.VITE_SITE_URL || "https://insilicology.com";
+export const SITE_URL: string = process.env.NEXT_PUBLIC_SITE_URL || "https://insilicology.com";
 
 const latency = () => new Promise((r) => window.setTimeout(r, 650));
 

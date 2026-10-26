@@ -1,3 +1,5 @@
+"use client";
+
 import { useId, useMemo, useRef, useState } from "react";
 import { usePublishedPdbs } from "./data/hooks";
 import { isValidPdbId, normalisePdbId } from "./data/api";
@@ -18,7 +20,7 @@ export function PdbSearchBox({ value, onChange, onSearch }: Props) {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(-1);
   const [error, setError] = useState<string | null>(null);
-  const blurTimer = useRef<number>();
+  const blurTimer = useRef<number | undefined>(undefined);
 
   const q = normalisePdbId(value);
   const matches = useMemo(() => {

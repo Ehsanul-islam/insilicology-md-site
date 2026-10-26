@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import { fetchPublishedPdbs, fetchPublishedRuns } from "./api";
 import type { MdRun, PublishedPdb } from "./types";

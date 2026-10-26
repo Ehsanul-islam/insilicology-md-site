@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useRef } from "react";
 import { useMdThemeValue, useReducedMotion } from "../useMdTheme";
 import { FALLBACK_WHOLE } from "./fallbackFrames";

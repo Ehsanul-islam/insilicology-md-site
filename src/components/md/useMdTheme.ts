@@ -1,3 +1,5 @@
+"use client";
+
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 
 export type MdTheme = "light" | "dark";
@@ -8,37 +10,47 @@ export const useMdThemeValue = () => useContext(MdThemeContext);
 
 /** True when the visitor prefers reduced motion; follows changes live. */
 export function useReducedMotion() {
-  const [reduced, setReduced] = useState(() => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false);
+  const [reduced, setReduced] = useState(false);
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
     const on = () => setReduced(mq.matches);
+    on();
     mq.addEventListener("change", on);
     return () => mq.removeEventListener("change", on);
   }, []);
   return reduced;
 }
-const KEY = "insilicology-md-theme";
+export const THEME_KEY = "insilicology-md-theme";
 
-function initial(): MdTheme {
+/** Inline <head> script: sets html[data-theme] before first paint (no flash). Keep in sync with the hook below. */
+export const THEME_INIT_SCRIPT = `try{var k="${THEME_KEY}",s=localStorage.getItem(k);var t=s==="light"||s==="dark"?s:(window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.dataset.theme=t;document.documentElement.style.background=t==="dark"?"#0e0e0e":"#ffffff"}catch(e){}`;
+
+function applyToDocument(t: MdTheme) {
+  document.documentElement.dataset.theme = t;
+  document.documentElement.style.background = t === "dark" ? "#0e0e0e" : "#ffffff";
+}
+
+function stored(): MdTheme | null {
   try {
-    const s = localStorage.getItem(KEY);
-    if (s === "light" || s === "dark") return s;
+    const s = localStorage.getItem(THEME_KEY);
+    return s === "light" || s === "dark" ? s : null;
   } catch {
-    /* storage unavailable */
+    return null; // storage unavailable
   }
-  return window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
 
 /** Page-scoped theme: OS default, remembered once the visitor toggles. */
 export function useMdTheme() {
-  const [theme, setTheme] = useState<MdTheme>(initial);
-  const [pinned, setPinned] = useState(() => {
-    try {
-      return !!localStorage.getItem(KEY);
-    } catch {
-      return false;
-    }
-  });
+  // server and first client render agree on "light"; the head script has already painted the right theme
+  const [theme, setTheme] = useState<MdTheme>("light");
+  const [pinned, setPinned] = useState(false);
+
+  useEffect(() => {
+    const s = stored();
+    const t: MdTheme = s ?? (window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    setTheme(t);
+    setPinned(!!s);
+  }, []);
 
   useEffect(() => {
     if (pinned) return;
@@ -48,11 +60,15 @@ export function useMdTheme() {
     return () => mq.removeEventListener("change", on);
   }, [pinned]);
 
+  useEffect(() => {
+    applyToDocument(theme);
+  }, [theme]);
+
   const toggle = useCallback(() => {
     setTheme((t) => {
       const next = t === "dark" ? "light" : "dark";
       try {
-        localStorage.setItem(KEY, next);
+        localStorage.setItem(THEME_KEY, next);
       } catch {
         /* storage unavailable */
       }
