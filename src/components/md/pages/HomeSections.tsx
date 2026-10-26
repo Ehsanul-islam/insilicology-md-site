@@ -28,7 +28,8 @@ export async function HomeSections() {
         <div className="md-wrap">
           <Head id="home-categories" label="─◆─ Categories" title="Browse by simulation type" href="/simulation-types" more="All simulation types" />
           <ul className="md-cards">
-            {types.map((t) => (
+            {/* two rows of four; the rest are one click away on /simulation-types */}
+            {types.slice(0, 8).map((t) => (
               <li key={t.slug}>
                 <Link className="md-card" href={`/simulation-types/${t.slug}`}>
                   <h3 className="md-card__title">{t.name}</h3>
