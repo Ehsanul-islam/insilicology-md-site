@@ -53,6 +53,9 @@ records and blog posts, a working contact form and real search.
    npx supabase db push                                  # applies supabase/migrations/*
    ```
 
+   Migration files are named `<timestamp>_<name>.sql`. If your project was set up through the Supabase connector in
+   Claude Code, the files already match the versions recorded on the project, so `db push` only applies what is new.
+
 3. Load the default analysis types and blog categories: open the SQL Editor, paste the contents of
    `supabase/seed.sql` and run it (safe to run again).
 4. Make yourself the first administrator. Sign up on the site first, then in the SQL Editor:
@@ -99,7 +102,7 @@ Storage if you want to accept trajectory files.
 Supabase's security advisor will flag the public views as "security definer" (an ERROR-level lint) and a few helper
 functions as callable by signed-in users (WARN). Both are intentional: the views run with the owner's rights so
 anonymous visitors can read approved content without any access to the underlying tables, and the helper and
-review functions each check who is calling. Trigger and internal functions are locked down (migration 0008).
+review functions each check who is calling. Trigger and internal functions are locked down (`advisor_fixes` migration).
 
 ### Database tests
 
