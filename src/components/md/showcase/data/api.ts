@@ -28,7 +28,9 @@ export async function fetchPublishedRuns(pdbId: string): Promise<MdRun[]> {
   }
   const { data, error } = await db.from("public_records").select("*").eq("pdb_id", id).order("published_at", { ascending: false }).limit(50);
   if (error) throw new Error("The search is unavailable right now. Please try again in a moment.");
-  return (data as PublicRecordRow[]).map(mapPublicRecord);
+  const real = (data as PublicRecordRow[]).map(mapPublicRecord);
+  // the demo entry shows its placeholder runs until a real record for it is published
+  return real.length ? real : sampleRunsFor(id);
 }
 
 /** Published PDB IDs for search suggestions (one row per PDB). */
@@ -37,7 +39,8 @@ export async function fetchPublishedPdbs(): Promise<PublishedPdb[]> {
   if (!db) return SAMPLE_PUBLISHED;
   const { data, error } = await db.from("published_pdbs").select("*").order("pdb_id").limit(200);
   if (error) return []; // suggestions are optional
-  return (data as PublishedPdbRow[]).map(mapPublishedPdb);
+  const real = (data as PublishedPdbRow[]).map(mapPublishedPdb);
+  return real.some((p) => p.pdb_id === "1AFS") ? real : [...real, ...SAMPLE_PUBLISHED];
 }
 
 /** Signed zip URL of a run's figures + .xvg + CITATION.txt; pass figure ids to bundle only those. */

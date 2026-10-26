@@ -28,6 +28,16 @@ export const LIST_LIMIT = 120;
 const fail = (what: string, message: string): never => {
   throw new Error(`could not load ${what}: ${message}`);
 };
+/**
+ * While the database has no real record for the demo entry (1AFS), its built-in sample runs fill in, flagged
+ * `placeholder` so they are labelled as a preview and kept out of search engines and the sitemap.
+ * They disappear for good once a real 1AFS record is published.
+ */
+const DEMO_PDB = "1AFS";
+const hasRealDemo = async () => (await dbRecords("pdb", DEMO_PDB, 1)).length > 0;
+const withDemo = async (real: MdRun[], keep: (r: MdRun) => boolean = () => true): Promise<MdRun[]> =>
+  (await hasRealDemo()) ? real : [...real, ...sample().filter(keep)];
+
 const sample = () => SAMPLE_PUBLISHED.flatMap((p) => sampleRunsFor(p.pdb_id));
 
 const dbRecords = cachedRead(
@@ -49,34 +59,37 @@ const dbRecords = cachedRead(
 /** The newest records, for list pages. */
 export async function listRecords(limit = LIST_LIMIT): Promise<MdRun[]> {
   if (!createPublicClient()) return sample().slice(0, limit);
-  return dbRecords("recent", "", limit);
+  return (await withDemo(await dbRecords("recent", "", limit))).slice(0, limit);
 }
 
 export async function getRecord(slug: string): Promise<MdRun | undefined> {
   const s = slug.toLowerCase();
   if (!createPublicClient()) return sample().find((r) => recordSlug(r) === s);
-  return (await dbRecords("slug", s, 1))[0];
+  return (await dbRecords("slug", s, 1))[0] ?? ((await hasRealDemo()) ? undefined : sample().find((r) => recordSlug(r) === s));
 }
 
 export async function getRecordsForPdb(pdbId: string): Promise<MdRun[]> {
   const id = pdbId.toUpperCase();
   if (!createPublicClient()) return sampleRunsFor(id);
-  return dbRecords("pdb", id, 50);
+  const real = await dbRecords("pdb", id, 50);
+  return id === DEMO_PDB ? withDemo(real) : real;
 }
 
 export async function getRecordsForType(typeSlug: string): Promise<MdRun[]> {
-  if (createPublicClient()) return dbRecords("type", typeSlug, LIST_LIMIT);
   const kinds = new Set<FigureKind>();
   for (const k of ["rmsd", "rmsf", "rg", "sasa", "hbond", "contacts", "mmpbsa", "pca", "fel", "dccm", "other"] as FigureKind[]) {
     if (typeForFigureKind(k)?.slug === typeSlug) kinds.add(k);
   }
-  return sample().filter((r) => r.md_figures?.some((f) => kinds.has(f.kind)));
+  const demo = (r: MdRun) => !!r.md_figures?.some((f) => kinds.has(f.kind));
+  if (createPublicClient()) return withDemo(await dbRecords("type", typeSlug, LIST_LIMIT), demo);
+  return sample().filter(demo);
 }
 
 /** Published records of one simulation type (apo protein, protein–ligand complex, umbrella sampling ...). */
 export async function getRecordsForSimulationType(slug: string): Promise<MdRun[]> {
-  if (createPublicClient()) return dbRecords("simtype", slug, LIST_LIMIT);
-  return sample().filter((r) => r.simulation_type_slug === slug);
+  const demo = (r: MdRun) => r.simulation_type_slug === slug;
+  if (createPublicClient()) return withDemo(await dbRecords("simtype", slug, LIST_LIMIT), demo);
+  return sample().filter(demo);
 }
 
 export async function searchRecords({ pdb, type }: { pdb?: string; type?: string }): Promise<MdRun[]> {
@@ -107,7 +120,9 @@ export async function listRecordSummaries(): Promise<RecordSummary[]> {
   if (!createPublicClient()) {
     return sample().map((r) => ({ slug: recordSlug(r), pdb_id: r.pdb_id, published_at: r.published_at, updated_at: null, placeholder: !!r.placeholder }));
   }
-  return dbSummaries();
+  const real = await dbSummaries();
+  if (await hasRealDemo()) return real;
+  return [...real, ...sample().map((r) => ({ slug: recordSlug(r), pdb_id: r.pdb_id, published_at: r.published_at, updated_at: null, placeholder: true }))];
 }
 
 const dbPdbs = cachedRead(
@@ -123,7 +138,8 @@ const dbPdbs = cachedRead(
 
 export async function listPublishedPdbs(): Promise<PublishedPdb[]> {
   if (!createPublicClient()) return SAMPLE_PUBLISHED;
-  return dbPdbs();
+  const real = await dbPdbs();
+  return real.some((p) => p.pdb_id === DEMO_PDB) ? real : [...real, ...SAMPLE_PUBLISHED];
 }
 
 export type FileSeries = { file_id: string; parsed: PlotData };
