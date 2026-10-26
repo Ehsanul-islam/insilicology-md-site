@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ANALYSIS_TYPES } from "../../lib/data/analysis-types";
+import { listAnalysisTypes } from "../../lib/data/analysis-type-store";
 import { pageMetadata } from "../../lib/seo";
 import { PageHead } from "../../components/md/pages/PageHead";
 
@@ -10,7 +10,10 @@ export const metadata = pageMetadata({
   path: "/analysis",
 });
 
-export default function AnalysisIndex() {
+export const revalidate = 3600;
+
+export default async function AnalysisIndex() {
+  const types = await listAnalysisTypes();
   return (
     <>
       <PageHead
@@ -22,7 +25,7 @@ export default function AnalysisIndex() {
       <section className="md-body">
         <div className="md-wrap">
           <ul className="md-cards">
-            {ANALYSIS_TYPES.map((t) => (
+            {types.map((t) => (
               <li key={t.slug}>
                 <Link className="md-card" href={`/analysis/${t.slug}`}>
                   <h2 className="md-card__title">{t.name}</h2>

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { AuthLink } from "./AuthLink";
 import type { MdTheme } from "./useMdTheme";
 
 const LINKS = [
@@ -78,6 +79,7 @@ export function MdNav({ theme, onToggleTheme }: { theme: MdTheme; onToggleTheme:
             >
               <MenuIcon open={open} />
             </button>
+            <AuthLink />
             <Link className="md-btn md-btn-primary" href="/contact">Get a quote</Link>
           </div>
         </div>

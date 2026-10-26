@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ANALYSIS_TYPES, getAnalysisType } from "../../../lib/data/analysis-types";
+import { getAnalysisTypeBySlug, listAnalysisTypes } from "../../../lib/data/analysis-type-store";
 import { getRecordsForType } from "../../../lib/data/records";
 import { listTutorials } from "../../../lib/data/tutorials";
 import { abs, clip, pageMetadata } from "../../../lib/seo";
@@ -10,11 +10,11 @@ import { RecordCards } from "../../../components/md/pages/RecordCards";
 
 type Props = { params: Promise<{ slug: string }> };
 
-export const generateStaticParams = () => ANALYSIS_TYPES.map((t) => ({ slug: t.slug }));
-export const dynamicParams = false;
+export const generateStaticParams = async () => (await listAnalysisTypes()).map((t) => ({ slug: t.slug }));
+export const revalidate = 3600;
 
 export async function generateMetadata({ params }: Props) {
-  const t = getAnalysisType((await params).slug);
+  const t = await getAnalysisTypeBySlug((await params).slug);
   if (!t) return {};
   return pageMetadata({
     title: `${t.name} in molecular dynamics: what it shows and how to run it`,
@@ -24,11 +24,11 @@ export async function generateMetadata({ params }: Props) {
 }
 
 export default async function AnalysisHub({ params }: Props) {
-  const t = getAnalysisType((await params).slug);
+  const t = await getAnalysisTypeBySlug((await params).slug);
   if (!t) notFound();
-  const [records, tutorials] = await Promise.all([getRecordsForType(t.slug), listTutorials()]);
+  const [records, tutorials, allTypes] = await Promise.all([getRecordsForType(t.slug), listTutorials(), listAnalysisTypes()]);
   const tutorial = tutorials.find((x) => x.slug === t.tutorial);
-  const others = ANALYSIS_TYPES.filter((x) => x.slug !== t.slug);
+  const others = allTypes.filter((x) => x.slug !== t.slug);
 
   return (
     <>

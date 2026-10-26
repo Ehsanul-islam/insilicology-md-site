@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { FIGURE_META, orderFigures } from "../../../components/md/showcase/data/figures";
 import { typeForFigureKind } from "../../../lib/data/analysis-types";
 import { displayResn, ligandLabelOf } from "../../../lib/data/format";
-import { getRecord, isIndexable, listRecords, recordPath, recordSlug } from "../../../lib/data/records";
+import { getRecord, isIndexable, listRecordSummaries, recordPath } from "../../../lib/data/records";
 import { abs, pageMetadata } from "../../../lib/seo";
 import { JsonLd } from "../../../components/JsonLd";
 import { CitationBox } from "../../../components/md/showcase/Citation";
@@ -14,7 +14,7 @@ type Props = { params: Promise<{ slug: string }> };
 export const revalidate = 3600;
 
 export async function generateStaticParams() {
-  return (await listRecords()).map((r) => ({ slug: recordSlug(r) }));
+  return (await listRecordSummaries()).slice(0, 200).map((r) => ({ slug: r.slug }));
 }
 
 export async function generateMetadata({ params }: Props) {

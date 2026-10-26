@@ -49,6 +49,9 @@ begin
   perform t.is((select authors from public.public_records where slug = '2abc-lig'), array['A. Author'], 'authors');
   perform t.is((select jsonb_array_length(files) from public.public_records where slug = '2abc-lig'), 1, 'one file in the snapshot');
   perform t.is((select files -> 0 ->> 'kind' from public.public_records where slug = '2abc-lig'), 'xvg', 'file kind');
+  perform t.is((select files -> 0 ? 'parsed' from public.public_records where slug = '2abc-lig'), false, 'list view leaves out the plot series');
+  perform t.is((select count(*) from public.public_record_series where record_id = rid), 1::bigint, 'series view returns the parsed data');
+  perform t.is((select parsed -> 'series' -> 1 ->> 1 from public.public_record_series where record_id = rid), '1', 'series content');
   perform t.ok((select updated_at from public.public_records where slug = '2abc-lig') is not null, 'snapshot time');
   perform t.is((select count(*) from information_schema.columns where table_schema = 'public' and table_name = 'public_records' and column_name in ('owner_id', 'admin_feedback', 'status', 'submitted_at')), 0::bigint, 'view hides internal columns');
   perform t.fails('select * from public.records', '42501', 'anon still cannot read the table');
@@ -149,6 +152,7 @@ begin
   perform t.is((select count(*) from public.public_records where slug = '2abc-lig'), 0::bigint, 'unpublished record disappears');
   perform t.is((select count(*) from public.search_records(p_pdb => '2abc')), 0::bigint, 'and from search');
   perform t.is((select count(*) from public.published_pdbs where pdb_id = '2ABC'), 0::bigint, 'and from published_pdbs');
+  perform t.is((select count(*) from public.public_record_series where record_id = rid), 0::bigint, 'and its plot data');
   perform t.root();
   perform t.is((select published_snapshot from public.records where id = rid), null::jsonb, 'snapshot removed');
   perform t.is((select status::text from public.records where id = rid), 'unpublished', 'status is unpublished');

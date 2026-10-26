@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ANALYSIS_TYPES } from "../../lib/data/analysis-types";
+import { listAnalysisTypes } from "../../lib/data/analysis-type-store";
 import { isIndexable, listRecords } from "../../lib/data/records";
 import { pageMetadata } from "../../lib/seo";
 import { PageHead } from "../../components/md/pages/PageHead";
@@ -16,8 +16,10 @@ export async function generateMetadata() {
   });
 }
 
+export const revalidate = 3600;
+
 export default async function SimulationsPage() {
-  const records = await listRecords();
+  const [records, types] = await Promise.all([listRecords(), listAnalysisTypes()]);
   return (
     <>
       <PageHead
@@ -35,7 +37,7 @@ export default async function SimulationsPage() {
           <div>
             <h2>Browse by analysis type</h2>
             <ul className="md-pills">
-              {ANALYSIS_TYPES.map((t) => (
+              {types.map((t) => (
                 <li key={t.slug}>
                   <Link className="md-pill" href={`/analysis/${t.slug}`}>{t.name}</Link>
                 </li>

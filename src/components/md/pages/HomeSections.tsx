@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ANALYSIS_TYPES } from "../../../lib/data/analysis-types";
+import { listAnalysisTypes } from "../../../lib/data/analysis-type-store";
 import { isIndexable, listRecords } from "../../../lib/data/records";
 import { listPosts } from "../../../lib/data/posts";
 import { listTutorials } from "../../../lib/data/tutorials";
@@ -19,7 +19,7 @@ function Head({ id, label, title, href, more }: { id: string; label: string; tit
 
 /** Server-rendered sections under the showcase: categories, featured records, tutorials and posts. */
 export async function HomeSections() {
-  const [records, tutorials, posts] = await Promise.all([listRecords(), listTutorials(), listPosts()]);
+  const [records, tutorials, posts, types] = await Promise.all([listRecords(12), listTutorials(), listPosts(), listAnalysisTypes()]);
   const featured = records.filter(isIndexable).slice(0, 3);
 
   return (
@@ -28,7 +28,7 @@ export async function HomeSections() {
         <div className="md-wrap">
           <Head id="home-categories" label="─◆─ Categories" title="Browse by analysis type" href="/analysis" more="All analysis types" />
           <ul className="md-cards">
-            {ANALYSIS_TYPES.slice(0, 8).map((t) => (
+            {types.slice(0, 8).map((t) => (
               <li key={t.slug}>
                 <Link className="md-card" href={`/analysis/${t.slug}`}>
                   <h3 className="md-card__title">{t.name}</h3>

@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { ANALYSIS_TYPES } from "../../../lib/data/analysis-types";
+import { listAnalysisTypes } from "../../../lib/data/analysis-type-store";
 
-export function MdFooter() {
+export async function MdFooter() {
+  const types = await listAnalysisTypes();
   return (
     <footer className="md-footer">
       <div className="md-wrap">
@@ -26,7 +27,7 @@ export function MdFooter() {
           <nav aria-label="Analysis types">
             <h2>Analyses</h2>
             <ul>
-              {ANALYSIS_TYPES.slice(0, 5).map((t) => (
+              {types.slice(0, 5).map((t) => (
                 <li key={t.slug}><Link href={`/analysis/${t.slug}`}>{t.name}</Link></li>
               ))}
             </ul>

@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { MdHero } from "../components/md/MdHero";
 import { Showcase } from "../components/md/showcase/Showcase";
+import { listAnalysisTypes } from "../lib/data/analysis-type-store";
 import { pageMetadata } from "../lib/seo";
 import { HomeSections } from "../components/md/pages/HomeSections";
 
@@ -22,10 +23,11 @@ async function heroFrame() {
 }
 
 export default async function HomePage() {
+  const types = await listAnalysisTypes();
   return (
     <>
       <MdHero ssrFrame={await heroFrame()} />
-      <Showcase />
+      <Showcase types={types} />
       <HomeSections />
       {/* Still to build: pricing, reviews and services sections */}
     </>

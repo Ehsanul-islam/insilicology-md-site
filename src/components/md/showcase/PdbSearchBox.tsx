@@ -5,16 +5,18 @@ import { useId, useMemo, useRef, useState } from "react";
 import { usePublishedPdbs } from "./data/hooks";
 import { isValidPdbId, normalisePdbId } from "./data/api";
 import { displayResn } from "../../../lib/data/format";
-import { resolveAnalysisType, suggestAnalysisTypes } from "../../../lib/data/analysis-types";
+import { resolveAnalysisType, suggestAnalysisTypes, type AnalysisType } from "../../../lib/data/analysis-types";
 
 type Props = {
+  /** Analysis types for the "Analysis type" mode; defaults to the built-in list. */
+  types?: AnalysisType[];
   value: string;
   onChange: (v: string) => void;
   onSearch: (pdbId: string) => void;
 };
 
 /** PDB ID input with suggestions from published runs (ARIA combobox + listbox). */
-export function PdbSearchBox({ value, onChange, onSearch }: Props) {
+export function PdbSearchBox({ types, value, onChange, onSearch }: Props) {
   const uid = useId().replace(/:/g, "");
   const inputId = `pdb-${uid}`;
   const listId = `pdb-list-${uid}`;
@@ -27,7 +29,7 @@ export function PdbSearchBox({ value, onChange, onSearch }: Props) {
   const [mode, setMode] = useState<"pdb" | "type">("pdb");
   const [typeValue, setTypeValue] = useState("");
   const isType = mode === "type";
-  const typeMatches = useMemo(() => suggestAnalysisTypes(typeValue), [typeValue]);
+  const typeMatches = useMemo(() => suggestAnalysisTypes(typeValue, 8, types), [typeValue, types]);
 
   const q = normalisePdbId(value);
   const matches = useMemo(() => {
@@ -51,7 +53,7 @@ export function PdbSearchBox({ value, onChange, onSearch }: Props) {
   };
 
   const submitType = (text: string) => {
-    const type = resolveAnalysisType(text) ?? (suggestAnalysisTypes(text).length === 1 ? suggestAnalysisTypes(text)[0] : undefined);
+    const type = resolveAnalysisType(text, types) ?? (suggestAnalysisTypes(text, 8, types).length === 1 ? suggestAnalysisTypes(text, 8, types)[0] : undefined);
     if (!type) {
       setError("Pick an analysis type from the list, such as RMSD or hydrogen bonds.");
       setOpen(false);

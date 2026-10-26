@@ -1,4 +1,6 @@
+import { ContactForm } from "../../components/md/ContactForm";
 import { isValidPdbId, normalisePdbId } from "../../components/md/showcase/data/api";
+import { createAdminSupabase } from "../../lib/supabase/admin";
 import { pageMetadata } from "../../lib/seo";
 import { PageHead } from "../../components/md/pages/PageHead";
 
@@ -31,7 +33,9 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
               Quote request for PDB <span className="md-mono">{pdb}</span>. Mention your ligand and the analyses you need.
             </p>
           )}
-          {EMAIL ? (
+          {createAdminSupabase() ? (
+            <ContactForm pdb={pdb ?? undefined} />
+          ) : EMAIL ? (
             <p>
               Email us at <a href={`mailto:${EMAIL}?subject=${encodeURIComponent(subject)}`}>{EMAIL}</a>.
             </p>

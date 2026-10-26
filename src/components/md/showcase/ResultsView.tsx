@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { IS_PREVIEW, SITE_URL, ligandSlug, requestDownloadBundle } from "./data/api";
+import { BUNDLES_ENABLED, IS_PREVIEW, SITE_URL, ligandSlug, requestDownloadBundle } from "./data/api";
 import { groupsFor, orderFigures, type FigureGroup } from "./data/figures";
 import type { MdRun } from "./data/types";
 import Link from "next/link";
@@ -155,11 +155,15 @@ export function ResultsView({ pdb, runs, current, onPick }: Props) {
             type="button"
             className="md-btn md-btn--solid md-btn--block"
             onClick={() => download()}
-            disabled={dl.busy || IS_PREVIEW || !figures.length}
+            disabled={dl.busy || !BUNDLES_ENABLED || !figures.length}
           >
             {dl.busy ? "Preparing download…" : `Download all ${figures.length} figures + .xvg (zip)`}
           </button>
-          {IS_PREVIEW && <p className="md-hint">Downloads are disabled in this preview.</p>}
+          {!BUNDLES_ENABLED && (
+            <p className="md-hint">
+              {IS_PREVIEW ? "Downloads are disabled in this preview." : "A zip of everything is coming soon. Use the buttons on each figure for now."}
+            </p>
+          )}
           {dl.error && (
             <p className="md-error" role="alert">
               {dl.error}
@@ -213,7 +217,7 @@ export function ResultsView({ pdb, runs, current, onPick }: Props) {
                 <button
                   type="button"
                   className="md-btn md-btn--sm md-selbar__solid"
-                  disabled={dl.busy || IS_PREVIEW}
+                  disabled={dl.busy || !BUNDLES_ENABLED}
                   onClick={() => download([...selected])}
                 >
                   Download selected + .xvg (zip)

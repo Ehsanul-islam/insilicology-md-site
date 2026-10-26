@@ -36,3 +36,77 @@ Env vars (see `.env.example`): `NEXT_PUBLIC_SITE_URL` (canonical site URL, defau
 2. Use `<AsciiMolecule pdbId="<ID>" ligandResn="<RESN>" />`.
 3. Optional: add a static fallback frame at `public/structures/<id>-whole.txt`
    (or `-pocket.txt`), 140 × 140 characters.
+
+## Backend (Supabase)
+
+The site runs without a backend, on sample data. Connect Supabase to get accounts, moderated simulation
+records and blog posts, a working contact form and real search.
+
+### 1. Create the project and load the database
+
+1. Create a project at [supabase.com](https://supabase.com).
+2. On your computer, in this repo:
+
+   ```bash
+   npx supabase login
+   npx supabase link --project-ref <your-project-ref>   # the id in your project URL
+   npx supabase db push                                  # applies supabase/migrations/*
+   ```
+
+3. Load the default analysis types and blog categories: open the SQL Editor, paste the contents of
+   `supabase/seed.sql` and run it (safe to run again).
+4. Make yourself the first administrator. Sign up on the site first, then in the SQL Editor:
+
+   ```sql
+   update public.profiles set role = 'admin'
+   where id = (select id from auth.users where email = 'you@example.org');
+   ```
+
+### 2. Environment variables
+
+Copy `.env.example` to `.env.local` and set the Supabase URL, publishable key and **service role key**
+(Project Settings > API). Set the same variables in Vercel (Project > Settings > Environment Variables).
+The service role key bypasses row-level security: keep it server-side and never paste it into chat or commit it.
+
+### 3. Auth settings (Authentication > URL Configuration)
+
+- Site URL: your production URL.
+- Redirect URLs: `https://<your-domain>/auth/callback` and `http://localhost:8080/auth/callback`.
+
+### 4. Refresh public pages on approval (Database > Webhooks)
+
+Public pages are cached for an hour. So that an approval shows up immediately, create a webhook for each of
+the tables `records`, `posts`, `analysis_types` and `blog_categories` (events: insert, update, delete):
+type *HTTP Request*, method `POST`, URL `https://<your-domain>/api/revalidate`, and an HTTP header
+`x-revalidate-secret` equal to `REVALIDATE_SECRET`.
+
+### 5. Storage limits
+
+Supabase's project-wide upload limit also applies (50 MB on the free plan). Raise it under Project Settings >
+Storage if you want to accept trajectory files.
+
+### How publication works
+
+- Records and posts are written by users and reviewed by an administrator. Nothing is public until approved.
+- The public site reads the **approved snapshot** (`public_records`, `public_posts` views), never the author's
+  working copy. Editing something that is live sends the edit back to review; the approved version stays up
+  until the edit is approved.
+- Only administrators create analysis types. Users can request one. Names, slugs and aliases are unique across
+  types ("RMSD", "RMSD analysis" and "Protein RMSD" cannot become separate categories).
+- Status changes go through database functions (`submit_*`, `approve_*`, `request_changes_*`, `reject_*`,
+  `unpublish_*`) that check who is calling. Rules live in the database, not only in the UI.
+
+Supabase's security advisor will flag the public views as "security definer". That is intentional: they run with
+the owner's rights so anonymous visitors can read approved content without any access to the underlying tables.
+
+### Database tests
+
+```bash
+npm run db:test      # needs a Postgres 15+ superuser connection, e.g. PGHOST=localhost PGUSER=postgres
+npm run db:seed      # regenerate supabase/seed.sql after editing src/lib/data/analysis-types.ts
+npm run db:fixtures  # regenerate tests/fixtures after changing a public view
+```
+
+`db:test` builds a fresh database for every file in `supabase/tests/`, using a small stand-in for Supabase's roles
+and `auth`/`storage` schemas (`supabase/tests/00_shim.sql`), and checks row-level security, the moderation
+workflow, storage rules and the public views.

@@ -216,17 +216,17 @@ export function getAnalysisType(slug: string) {
 }
 
 /** Resolve free text (a slug, name or alias) to its canonical type. */
-export function resolveAnalysisType(query: string) {
+export function resolveAnalysisType(query: string, types: AnalysisType[] = ANALYSIS_TYPES) {
   const k = normaliseKey(query);
   if (!k) return undefined;
-  return ANALYSIS_TYPES.find((t) => [t.slug, t.name, ...t.aliases].some((a) => normaliseKey(a) === k));
+  return types.find((t) => [t.slug, t.name, ...t.aliases].some((a) => normaliseKey(a) === k));
 }
 
 /** Types whose name, slug or any alias contains the query, for search suggestions. */
-export function suggestAnalysisTypes(query: string, limit = 8) {
+export function suggestAnalysisTypes(query: string, limit = 8, types: AnalysisType[] = ANALYSIS_TYPES) {
   const k = normaliseKey(query);
-  if (!k) return ANALYSIS_TYPES.slice(0, limit);
-  return ANALYSIS_TYPES.filter((t) => [t.slug, t.name, ...t.aliases].some((a) => normaliseKey(a).includes(k))).slice(0, limit);
+  if (!k) return types.slice(0, limit);
+  return types.filter((t) => [t.slug, t.name, ...t.aliases].some((a) => normaliseKey(a).includes(k))).slice(0, limit);
 }
 
 export const typeFigureKind = (slug: string | null | undefined) => ANALYSIS_TYPES.find((t) => t.slug === slug)?.figureKind;

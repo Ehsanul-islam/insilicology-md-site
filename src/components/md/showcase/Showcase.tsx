@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import type { AnalysisType } from "../../../lib/data/analysis-types";
 import { useState } from "react";
 import { AsciiMotif } from "../ascii/AsciiMotif";
 import { usePublishedRuns } from "./data/hooks";
@@ -40,7 +41,7 @@ function NotSimulated({ pdb }: { pdb: string }) {
 }
 
 /** Landing-page section: search by PDB ID, then browse complexes and their figures. */
-export function Showcase() {
+export function Showcase({ types }: { types?: AnalysisType[] }) {
   const [value, setValue] = useState("");
   const [pdb, setPdb] = useState<string | null>(null);
   const [current, setCurrent] = useState(0);
@@ -61,6 +62,7 @@ export function Showcase() {
               cite.
             </p>
             <PdbSearchBox
+              types={types}
               value={value}
               onChange={setValue}
               onSearch={(id) => {

@@ -276,13 +276,21 @@ select
   s ->> 'license' as license,
   s -> 'project' as project,
   array(select jsonb_array_elements_text(coalesce(s -> 'tags', '[]'::jsonb))) as tags,
-  coalesce(s -> 'files', '[]'::jsonb) as files,
+  -- the plot series (`parsed`) is left out here to keep list queries small; see public_record_series
+  coalesce((select jsonb_agg(fl - 'parsed') from jsonb_array_elements(s -> 'files') fl), '[]'::jsonb) as files,
   s ->> 'contributor' as contributor,
   r.published_at,
   (s ->> 'snapshot_at')::timestamptz as updated_at
 from public.records r
 cross join lateral (select r.published_snapshot as s) x
 where r.is_public;
+
+-- Plot data for the files of published records, fetched one record at a time by the record page.
+create or replace view public.public_record_series as
+select r.id as record_id, (fl ->> 'id')::uuid as file_id, fl -> 'parsed' as parsed
+from public.records r
+cross join lateral jsonb_array_elements(r.published_snapshot -> 'files') fl
+where r.is_public and jsonb_typeof(fl -> 'parsed') = 'object';
 
 create or replace view public.published_pdbs as
 select
@@ -302,7 +310,7 @@ from (
 ) q
 group by pdb_id;
 
-grant select on public.public_records, public.published_pdbs to anon, authenticated;
+grant select on public.public_records, public.public_record_series, public.published_pdbs to anon, authenticated;
 
 create or replace function public.search_records(
   q text default null, p_pdb text default null, p_type text default null, p_tag text default null,
