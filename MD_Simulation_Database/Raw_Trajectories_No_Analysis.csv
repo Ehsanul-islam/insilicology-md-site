@@ -1,0 +1,36 @@
+drive_folder,time_ns_from_mdp
+Drive-1/7463,
+Drive-1/SImulation-Himel/1M17,
+Drive-1/SImulation-Himel/4G1V,
+Drive-1/Simulation-Biochem/Chain_Edited_VTLR2_1,
+Drive-1/Simulation-Biochem/Chain_Edited_VTLR4_2,
+Drive-1/Simulation-Calvin/Calvin/E6_LTS0008171_G,0.1
+Drive-1/Simulation-Calvin/HPV18_ligand_complex(1)_1,
+Drive-1/Simulation-Calvin/HPV31_ligand_complex(1)_2,
+Drive-1/Simulation-Calvin/HPV33_ligand_complex(1)_3,
+Drive-1/Simulation-Calvin/HPV_45_ligand_complex(1)_4,
+Drive-1/Simulation-Calvin/HPV_52_ligand_complex(1)_5,
+Drive-1/Simulation-Calvin/HPV_58_ligand_complex(1)_6,
+Drive-1/Simulation-Malaysia/Untitled folder/cmplx1,
+Drive-1/Simulation-Malaysia/Untitled folder/cmplx2,
+Drive-1/Simulation-Miraz/Untitled folder,
+Drive-1/deepak,
+Drive-2/3LN1_1,
+Drive-2/3LN1_13FG_5,
+Drive-2/4KIK_13FG_8,
+Drive-2/4KIK_7,
+Drive-2/4L7B_13FG_10,
+Drive-2/4L7B_2,
+Drive-2/5K6J_13FG_6,
+Drive-2/5K6J_3,
+Drive-2/5WO4_4,
+Drive-2/6N7A_14FG_11,
+Drive-2/6N7A_9,
+Drive-2/Active CB1(5XRA)_LIGAND (trans-p-Coumaroyltyramine CID 5372945).pdb,100.0
+Drive-2/Active CB2(6KPC)_LIGAND (trans-p-Coumaroyltyramine CID 5372945),100.0
+Drive-2/Active CB2(6KPC)_REFERENCE agoniste (WIN 55_212-2_ CID 5311501).pdb,100.0
+Drive-2/Inactive CB1(5TGZ)_LIGAND (trans-p-Coumaroyltyramine CID 5372945).pdb,100.0
+Drive-2/Inactive CB1(5TGZ)_REFERENCE Antagonite (AM6538_ CID 46912833).pdb,100.0
+Drive-2/Inactive CB2(5ZTY)_LIGAND (trans-p-Coumaroyltyramine CID 5372945).pdb,100.0
+Drive-2/samip/TLR2,100.0
+Drive-2/samip/TLR4,100.0

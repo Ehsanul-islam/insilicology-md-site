@@ -1,0 +1,48 @@
+# This file was created Mon Oct 12 03:54:34 2026
+# Created by:
+#                       :-) GROMACS - gmx rmsf, 2026.3 (-:
+# 
+# Executable:   /home/ehsan/Software/install/gromacs-2026.3/bin/gmx
+# Data prefix:  /home/ehsan/Software/install/gromacs-2026.3
+# Working dir:  /home/ehsan/PARP1-7KK4-Scutellarein/analysis
+# Command line:
+#   gmx rmsf -s ../MD.tpr -f fit.xtc -n ../index.ndx -o ../xvg/rmsf_lig.xvg
+# gmx rmsf is part of G R O M A C S:
+#
+# Good gRace! Old Maple Actually Chews Slate
+#
+@    title "RMS fluctuation"
+@    xaxis  label "Atom"
+@    yaxis  label "(nm)"
+@TYPE xy
+ 5424   0.0130
+ 5425   0.0206
+ 5426   0.0138
+ 5427   0.0262
+ 5428   0.0146
+ 5429   0.0200
+ 5430   0.0182
+ 5431   0.1178
+ 5432   0.1194
+ 5433   0.0183
+ 5434   0.1180
+ 5435   0.1193
+ 5436   0.0257
+ 5437   0.0227
+ 5438   0.0294
+ 5439   0.0309
+ 5440   0.0367
+ 5441   0.0361
+ 5442   0.0325
+ 5443   0.0337
+ 5444   0.0306
+ 5445   0.0400
+ 5446   0.0407
+ 5447   0.2097
+ 5448   0.2110
+ 5449   0.2086
+ 5450   0.2122
+ 5451   0.0961
+ 5452   0.0990
+ 5453   0.0484
+ 5454   0.0862

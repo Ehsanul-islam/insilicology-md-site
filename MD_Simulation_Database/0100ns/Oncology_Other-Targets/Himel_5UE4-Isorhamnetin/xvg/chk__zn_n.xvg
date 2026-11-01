@@ -1,0 +1,63 @@
+# This file was created Mon Oct 19 02:47:12 2026
+# Created by:
+#                      :-) GROMACS - gmx select, 2026.3 (-:
+# 
+# Executable:   /home/ehsan/Software/install/gromacs-2026.3/bin/gmx
+# Data prefix:  /home/ehsan/Software/install/gromacs-2026.3
+# Working dir:  /home/ehsan/4XCT-Isorhamnetin/chk
+# Command line:
+#   gmx select -s ../MD.tpr -f ../MD.xtc -dt 100 -select '(resname HSD HSE HSP and name NE2 ND1) and within 0.32 of resname ZN2' -os zn_n.xvg
+# gmx select is part of G R O M A C S:
+#
+# Great Red Oystrich Makes All Chemists Sane
+#
+@    title "Selection size"
+@    xaxis  label "Time (ps)"
+@    yaxis  label "Number"
+@TYPE xy
+@ view 0.15, 0.15, 0.75, 0.85
+@ legend on
+@ legend box on
+@ legend loctype view
+@ legend 0.78, 0.8
+@ legend length 2
+@ s0 legend "(resname HSD HSE HSP and name NE2 ND1) and within 0.32 of resname ZN2"
+      0.000    6.000
+    100.000    6.000
+    200.000    6.000
+    300.000    6.000
+    400.000    6.000
+    500.000    6.000
+    600.000    6.000
+    700.000    6.000
+    800.000    6.000
+    900.000    6.000
+   1000.000    6.000
+   1100.000    6.000
+   1200.000    6.000
+   1300.000    6.000
+   1400.000    6.000
+   1500.000    6.000
+   1600.000    6.000
+   1700.000    6.000
+   1800.000    6.000
+   1900.000    6.000
+   2000.000    6.000
+   2100.000    6.000
+   2200.000    6.000
+   2300.000    6.000
+   2400.000    6.000
+   2500.000    6.000
+   2600.000    6.000
+   2700.000    6.000
+   2800.000    6.000
+   2900.000    6.000
+   3000.000    6.000
+   3100.000    6.000
+   3200.000    6.000
+   3300.000    6.000
+   3400.000    6.000
+   3500.000    6.000
+   3600.000    6.000
+   3700.000    6.000
+   3800.000    6.000

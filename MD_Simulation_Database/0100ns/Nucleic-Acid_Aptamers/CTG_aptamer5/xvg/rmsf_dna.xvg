@@ -1,0 +1,57 @@
+# This file was created Mon Aug 25 01:17:42 2025
+# Created by:
+#                       :-) GROMACS - gmx rmsf, 2025.1 (-:
+# 
+# Executable:   /usr/local/gromacs_gpu/bin/gmx
+# Data prefix:  /usr/local/gromacs_gpu
+# Working dir:  /media/arian/Transcend/00000001aptamer/aptamer5
+# Command line:
+#   gmx rmsf -s md.tpr -f md.xtc -o rmsf_dna.xvg -res
+# gmx rmsf is part of G R O M A C S:
+#
+# S  C  A  M  O  R  G
+#
+@    title "RMS fluctuation"
+@    xaxis  label "Residue"
+@    yaxis  label "(nm)"
+@TYPE xy
+    1   0.4366
+    2   0.4083
+    3   0.3462
+    4   0.2373
+    5   0.2175
+    6   0.1918
+    7   0.1864
+    8   0.2882
+    9   0.3020
+   10   0.2962
+   11   0.3127
+   12   0.4077
+   13   0.4777
+   14   0.4814
+   15   0.3513
+   16   0.2993
+   17   0.3095
+   18   0.4528
+   19   0.4277
+   20   0.4186
+   21   0.4436
+   22   0.5198
+   23   0.5249
+   24   0.4812
+   25   0.2889
+   26   0.3602
+   27   0.3480
+   28   0.3561
+   29   0.3965
+   30   0.4701
+   31   0.4940
+   32   0.4563
+   33   0.3629
+   34   0.3356
+   35   0.3149
+   36   0.2454
+   37   0.1737
+   38   0.1505
+   39   0.1855
+   40   0.2426

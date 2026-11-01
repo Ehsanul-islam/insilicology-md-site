@@ -1,0 +1,15 @@
+# generated from CSV; BSN
+@    title "RMSF per residue (mean of heavy atoms)"
+@    xaxis  label "Residue position"
+@    yaxis  label "RMSF (A)"
+@TYPE xy
+@ view 0.15, 0.15, 0.75, 0.85
+@ legend on
+@ s0 legend "RMSF"
+1 1.13997
+2 2.40722
+3 2.62358
+4 2.69093
+5 2.18147
+6 2.42436
+7 2.08246

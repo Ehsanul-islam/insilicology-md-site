@@ -1,0 +1,17 @@
+Ligand,Quercetin
+Backbone RMSD (nm) 60-100 ns,0.213 ± 0.015
+Ligand RMSD (nm) 60-100 ns,0.244 ± 0.052
+Rg (nm) 60-100 ns,1.528 ± 0.009
+Protein SASA (nm2) 60-100 ns,92.634 ± 2.143
+Ligand SASA (nm2) 60-100 ns,4.892 ± 0.180
+H-bonds 60-100 ns,2.556 ± 0.844
+Min dist (nm) 60-100 ns,0.173 ± 0.011
+Contacts 60-100 ns,540.170 ± 45.553
+MM/GBSA dG (kcal/mol),-26.90 ± 3.29 (SD)
+ΔVDWAALS,-34.82
+ΔEEL,-31.74
+ΔEGB,44.13
+ΔESURF,-4.47
+ΔGGAS,-66.56
+ΔGSOLV,39.66
+Top residues,"Tyr248 (-2.65), His226 (-2.17), Leu188 (-1.99), Tyr245 (-1.48), Met247 (-1.41)"

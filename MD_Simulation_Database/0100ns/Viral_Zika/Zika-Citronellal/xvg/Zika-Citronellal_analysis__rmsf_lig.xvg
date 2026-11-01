@@ -1,0 +1,46 @@
+# This file was created Wed Oct  7 11:04:30 2026
+# Created by:
+#                       :-) GROMACS - gmx rmsf, 2026.3 (-:
+# 
+# Executable:   /home/ehsan/Software/install/gromacs-2026.3/bin/gmx
+# Data prefix:  /home/ehsan/Software/install/gromacs-2026.3
+# Working dir:  /home/ehsan/Zika-Citronellal/analysis
+# Command line:
+#   gmx rmsf -s ../MD.tpr -f fit.xtc -n ../index.ndx -o rmsf_lig.xvg
+# gmx rmsf is part of G R O M A C S:
+#
+# Gyas ROwers Mature At Cryogenic Speed
+#
+@    title "RMS fluctuation"
+@    xaxis  label "Atom"
+@    yaxis  label "(nm)"
+@TYPE xy
+ 2340   0.0782
+ 2341   0.0505
+ 2342   0.1047
+ 2343   0.0757
+ 2344   0.0761
+ 2345   0.1210
+ 2346   0.1045
+ 2347   0.0696
+ 2348   0.0379
+ 2349   0.1264
+ 2350   0.1406
+ 2351   0.1298
+ 2352   0.1362
+ 2353   0.1082
+ 2354   0.1612
+ 2355   0.1626
+ 2356   0.1623
+ 2357   0.1485
+ 2358   0.1452
+ 2359   0.1580
+ 2360   0.1832
+ 2361   0.1801
+ 2362   0.1615
+ 2363   0.1831
+ 2364   0.1838
+ 2365   0.1836
+ 2366   0.2033
+ 2367   0.2029
+ 2368   0.2028

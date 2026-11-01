@@ -1,0 +1,48 @@
+# This file was created Mon Oct 12 16:32:31 2026
+# Created by:
+#                       :-) GROMACS - gmx rmsf, 2026.3 (-:
+# 
+# Executable:   /home/ehsan/Software/install/gromacs-2026.3/bin/gmx
+# Data prefix:  /home/ehsan/Software/install/gromacs-2026.3
+# Working dir:  /home/ehsan/AKT1-4GV1-Scutellarein/analysis
+# Command line:
+#   gmx rmsf -s ../MD.tpr -f fit.xtc -n ../index.ndx -o ../xvg/rmsf_lig.xvg
+# gmx rmsf is part of G R O M A C S:
+#
+# GROtesk MACabre and Sinister
+#
+@    title "RMS fluctuation"
+@    xaxis  label "Atom"
+@    yaxis  label "(nm)"
+@TYPE xy
+ 5362   0.0148
+ 5363   0.0195
+ 5364   0.0136
+ 5365   0.0250
+ 5366   0.0152
+ 5367   0.0219
+ 5368   0.0176
+ 5369   0.1141
+ 5370   0.1132
+ 5371   0.0195
+ 5372   0.1157
+ 5373   0.1141
+ 5374   0.0263
+ 5375   0.0266
+ 5376   0.0337
+ 5377   0.0290
+ 5378   0.0387
+ 5379   0.0371
+ 5380   0.0308
+ 5381   0.0387
+ 5382   0.0302
+ 5383   0.0439
+ 5384   0.0385
+ 5385   0.2037
+ 5386   0.2004
+ 5387   0.2038
+ 5388   0.2025
+ 5389   0.0812
+ 5390   0.0736
+ 5391   0.0882
+ 5392   0.0821

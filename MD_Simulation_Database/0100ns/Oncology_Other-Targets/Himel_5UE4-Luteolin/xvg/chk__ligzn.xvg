@@ -1,0 +1,61 @@
+# This file was created Mon Oct 19 02:47:11 2026
+# Created by:
+#                     :-) GROMACS - gmx distance, 2026.3 (-:
+# 
+# Executable:   /home/ehsan/Software/install/gromacs-2026.3/bin/gmx
+# Data prefix:  /home/ehsan/Software/install/gromacs-2026.3
+# Working dir:  /home/ehsan/4XCT-Luteolin/chk
+# Command line:
+#   gmx distance -s ../MD.tpr -f ../MD.xtc -dt 100 -select 'com of resname LIG plus com of resname ZN2' -oav ligzn.xvg
+# gmx distance is part of G R O M A C S:
+#
+# Getting the Right Output Means no Artefacts in Calculating Stuff
+#
+@    title "Average distance"
+@    xaxis  label "Time (ps)"
+@    yaxis  label "Distance (nm)"
+@TYPE xy
+@ view 0.15, 0.15, 0.75, 0.85
+@ legend on
+@ legend box on
+@ legend loctype view
+@ legend 0.78, 0.8
+@ legend length 2
+@ s0 legend "com of resname LIG plus com of resname ZN2"
+      0.000    0.934
+    100.000    0.975
+    200.000    0.957
+    300.000    0.913
+    400.000    1.042
+    500.000    0.996
+    600.000    1.063
+    700.000    1.015
+    800.000    1.011
+    900.000    0.956
+   1000.000    0.982
+   1100.000    0.964
+   1200.000    0.984
+   1300.000    0.995
+   1400.000    0.995
+   1500.000    0.959
+   1600.000    0.941
+   1700.000    1.013
+   1800.000    0.962
+   1900.000    1.019
+   2000.000    1.010
+   2100.000    0.952
+   2200.000    0.978
+   2300.000    1.041
+   2400.000    0.995
+   2500.000    1.010
+   2600.000    1.007
+   2700.000    1.031
+   2800.000    0.969
+   2900.000    1.025
+   3000.000    0.986
+   3100.000    1.044
+   3200.000    1.016
+   3300.000    1.011
+   3400.000    2.379
+   3500.000    2.397
+   3600.000    2.560

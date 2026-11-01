@@ -1,0 +1,152 @@
+@ autoscale onread none
+@ with g0
+@ g0 on
+@ title "RMS fluctuation (nm) "
+@ xaxis  ticklabel off
+@ world xmin 1
+@ world xmax 29
+@ world ymin 0
+@ world ymax 9.28759
+@ view xmin 0.15
+@ view xmax 0.85
+@ view ymin 0.616667
+@ view ymax 0.85
+@ yaxis  label "vec 1"
+@ xaxis tick major 5
+@ xaxis tick minor 2.5
+@ xaxis ticklabel start type spec
+@ xaxis ticklabel start 0
+@ yaxis tick major 2
+@ yaxis tick minor 1
+@ yaxis ticklabel start type spec
+@ yaxis ticklabel start 0
+    1.0000    8.33477
+    2.0000    8.32966
+    3.0000    8.33791
+    4.0000    8.35143
+    5.0000    8.35704
+    6.0000    8.34860
+    7.0000    8.34664
+    8.0000    8.33036
+    9.0000    8.35037
+   10.0000    8.38645
+   11.0000    8.40217
+   12.0000    8.38270
+   13.0000    8.32567
+   14.0000    8.43764
+   15.0000    8.40758
+   16.0000    8.35936
+   17.0000    8.33000
+   18.0000    8.28135
+   19.0000    8.35585
+   20.0000    8.37616
+   21.0000    8.33248
+   22.0000    8.32672
+   23.0000    8.29947
+   24.0000    8.31926
+   25.0000    8.39566
+   26.0000    8.44326
+   27.0000    8.43087
+   28.0000    8.35240
+   29.0000    8.32325
+&
+@ with g1
+@ g1 on
+@ xaxis  ticklabel off
+@ world xmin 1
+@ world xmax 29
+@ world ymin 0
+@ world ymax 5.74485
+@ view xmin 0.15
+@ view xmax 0.85
+@ view ymin 0.383333
+@ view ymax 0.616667
+@ yaxis  label "vec 2"
+@ xaxis tick major 5
+@ xaxis tick minor 2.5
+@ xaxis ticklabel start type spec
+@ xaxis ticklabel start 0
+@ yaxis tick major 2
+@ yaxis tick minor 1
+@ yaxis ticklabel start type spec
+@ yaxis ticklabel start 0
+    1.0000    5.16473
+    2.0000    5.18046
+    3.0000    5.18733
+    4.0000    5.17880
+    5.0000    5.16283
+    6.0000    5.15582
+    7.0000    5.17271
+    8.0000    5.17119
+    9.0000    5.18537
+   10.0000    5.20104
+   11.0000    5.20229
+   12.0000    5.18846
+   13.0000    5.15783
+   14.0000    5.21736
+   15.0000    5.21526
+   16.0000    5.18644
+   17.0000    5.18378
+   18.0000    5.14955
+   19.0000    5.13405
+   20.0000    5.15138
+   21.0000    5.20275
+   22.0000    5.14783
+   23.0000    5.15023
+   24.0000    5.18734
+   25.0000    5.18993
+   26.0000    5.21621
+   27.0000    5.22260
+   28.0000    5.19331
+   29.0000    5.20663
+&
+@ with g2
+@ g2 on
+@ xaxis  label "Atom number"
+@ world xmin 1
+@ world xmax 29
+@ world ymin 0
+@ world ymax 4.13857
+@ view xmin 0.15
+@ view xmax 0.85
+@ view ymin 0.15
+@ view ymax 0.383333
+@ yaxis  label "vec 3"
+@ xaxis tick major 5
+@ xaxis tick minor 2.5
+@ xaxis ticklabel start type spec
+@ xaxis ticklabel start 0
+@ yaxis tick major 2
+@ yaxis tick minor 1
+@ yaxis ticklabel start type spec
+@ yaxis ticklabel start 0
+    1.0000    3.66323
+    2.0000    3.66543
+    3.0000    3.64779
+    4.0000    3.62744
+    5.0000    3.62454
+    6.0000    3.64263
+    7.0000    3.70012
+    8.0000    3.71955
+    9.0000    3.73583
+   10.0000    3.73223
+   11.0000    3.71283
+   12.0000    3.69703
+   13.0000    3.68305
+   14.0000    3.70907
+   15.0000    3.74774
+   16.0000    3.61093
+   17.0000    3.76234
+   18.0000    3.72336
+   19.0000    3.64028
+   20.0000    3.59664
+   21.0000    3.65127
+   22.0000    3.68171
+   23.0000    3.68711
+   24.0000    3.68114
+   25.0000    3.68208
+   26.0000    3.69702
+   27.0000    3.74274
+   28.0000    3.61412
+   29.0000    3.65457
+&

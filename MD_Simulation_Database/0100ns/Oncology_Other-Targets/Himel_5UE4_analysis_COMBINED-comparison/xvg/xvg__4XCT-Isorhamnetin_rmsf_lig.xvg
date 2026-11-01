@@ -1,0 +1,52 @@
+# This file was created Mon Oct 19 12:46:01 2026
+# Created by:
+#                       :-) GROMACS - gmx rmsf, 2026.3 (-:
+# 
+# Executable:   /home/ehsan/Software/install/gromacs-2026.3/bin/gmx
+# Data prefix:  /home/ehsan/Software/install/gromacs-2026.3
+# Working dir:  /home/ehsan/4XCT-Isorhamnetin/analysis5
+# Command line:
+#   gmx rmsf -s first_fit.pdb -f fit.xtc -n pl.ndx -o rmsf_lig.xvg
+# gmx rmsf is part of G R O M A C S:
+#
+# GROup of MAchos and Cynical Suckers
+#
+@    title "RMS fluctuation"
+@    xaxis  label "Atom"
+@    yaxis  label "(nm)"
+@TYPE xy
+ 2407   0.0125
+ 2408   0.0274
+ 2409   0.0228
+ 2410   0.0441
+ 2411   0.0356
+ 2412   0.0216
+ 2413   0.0308
+ 2414   0.0348
+ 2415   0.0852
+ 2416   0.0335
+ 2417   0.0865
+ 2418   0.0311
+ 2419   0.0422
+ 2420   0.0494
+ 2421   0.0284
+ 2422   0.0281
+ 2423   0.0281
+ 2424   0.0931
+ 2425   0.1174
+ 2426   0.0409
+ 2427   0.0498
+ 2428   0.0542
+ 2429   0.0578
+ 2430   0.0684
+ 2431   0.0351
+ 2432   0.0790
+ 2433   0.1307
+ 2434   0.1321
+ 2435   0.1654
+ 2436   0.1661
+ 2437   0.1645
+ 2438   0.0525
+ 2439   0.0686
+ 2440   0.0819
+ 2441   0.0917
