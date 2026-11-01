@@ -54,6 +54,8 @@ export type MdRun = {
 /** A file of a published record. `analysis_slug` is null for supporting files (structures, trajectories ...). */
 export type MdRecordFile = {
   id: string;
+  /** Where the browser fetches it: the CDN for imported files, the download route otherwise. */
+  url: string;
   kind: string;
   filename: string;
   size_bytes: number | null;

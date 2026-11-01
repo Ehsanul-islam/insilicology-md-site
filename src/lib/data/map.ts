@@ -38,6 +38,7 @@ export type PublicRecordRow = {
     figure_kind: string | null;
     analysis_slug?: string | null;
     analysis_name?: string | null;
+    external_url?: string | null;
   }[];
   analysis_slugs?: string[] | null;
   analysis_names?: string[] | null;
@@ -164,7 +165,7 @@ export function mapPublicRecord(row: PublicRecordRow): MdRun {
     license: row.license,
     analyses: (row.analysis_slugs ?? []).map((slug, i) => ({ slug, name: row.analysis_names?.[i] ?? slug })),
     files: (row.files ?? []).map(
-      (f): MdRecordFile => ({ id: f.id, kind: f.kind, filename: f.filename, size_bytes: f.size_bytes ?? null, caption: f.caption, analysis_slug: f.analysis_slug ?? null }),
+      (f): MdRecordFile => ({ id: f.id, url: f.external_url || fileUrl(f.id), kind: f.kind, filename: f.filename, size_bytes: f.size_bytes ?? null, caption: f.caption, analysis_slug: f.analysis_slug ?? null }),
     ),
     description: row.description,
     software: [row.software, row.software_version].filter(Boolean).join(" ") || null,

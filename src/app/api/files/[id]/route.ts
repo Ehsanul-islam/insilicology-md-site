@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createAdminSupabase } from "../../../../lib/supabase/admin";
 import { createPublicClient } from "../../../../lib/supabase/public";
 
+const EXTERNAL_HOSTS = new Set(["cdn.jsdelivr.net", "raw.githubusercontent.com"]);
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 /**
@@ -23,8 +24,13 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     console.error("file lookup failed", error.message);
     return new NextResponse("Temporarily unavailable", { status: 503 });
   }
-  const file = (data?.files as { id: string; storage_path: string; filename: string }[] | undefined)?.find((f) => f.id === id);
+  const file = (data?.files as { id: string; storage_path: string; filename: string; external_url?: string | null }[] | undefined)?.find((f) => f.id === id);
   if (!file) return new NextResponse("Not found", { status: 404 });
+
+  // files that live in the GitHub repository (imported datasets) are served by the CDN
+  if (file.external_url && EXTERNAL_HOSTS.has(new URL(file.external_url).hostname)) {
+    return NextResponse.redirect(file.external_url, { status: 302, headers: { "Cache-Control": "public, max-age=3600" } });
+  }
 
   const download = request.nextUrl.searchParams.get("download") === "1";
   const { data: signed, error: signError } = await admin.storage

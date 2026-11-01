@@ -23,7 +23,7 @@ export const recordPath = (run: Linkable) => `/simulations/${recordSlug(run)}`;
 export const isIndexable = (run: Pick<MdRun, "placeholder">) => !run.placeholder;
 
 const TAGS = ["records"];
-export const LIST_LIMIT = 120;
+export const LIST_LIMIT = 300;
 
 const fail = (what: string, message: string): never => {
   throw new Error(`could not load ${what}: ${message}`);

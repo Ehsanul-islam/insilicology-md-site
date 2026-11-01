@@ -23,7 +23,7 @@ function contentSecurityPolicy() {
     "default-src 'self'",
     "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com",
     "style-src 'self' 'unsafe-inline'",
-    `img-src 'self' data: blob: ${supabase}`.trim(),
+    `img-src 'self' data: blob: https://cdn.jsdelivr.net ${supabase}`.trim(),
     "font-src 'self' data:",
     `connect-src 'self' ${supabase}`.trim(),
     "frame-src https://challenges.cloudflare.com",

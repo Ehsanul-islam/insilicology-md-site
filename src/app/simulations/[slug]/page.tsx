@@ -20,7 +20,7 @@ export async function generateStaticParams() {
 }
 
 /** "1AFS with TES" when there is a structure; the author's title for records without a PDB ID. */
-const headingOf = (run: MdRun) => (run.pdb_id ? `${run.pdb_id} with ${ligandLabelOf(run)}` : run.title || "Simulation record");
+const headingOf = (run: MdRun) => (!run.placeholder && run.title ? run.title : run.pdb_id ? `${run.pdb_id} with ${ligandLabelOf(run)}` : run.title || "Simulation record");
 
 const analysisLabels = (run: MdRun) =>
   run.analyses ? run.analyses.map((a) => a.name) : (run.md_figures ?? []).map((f) => FIGURE_META[f.kind].label);
@@ -49,7 +49,7 @@ function Downloads({ files }: { files: MdRecordFile[] }) {
     <ul className="md-files">
       {files.map((f) => (
         <li key={f.id}>
-          <a className="md-files__name" href={`/api/files/${f.id}?download=1`} rel="nofollow">{f.filename}</a>
+          <a className="md-files__name" href={f.url.startsWith("/") ? `${f.url}?download=1` : f.url} rel="nofollow noopener" download={f.filename}>{f.filename}</a>
           <span className="md-files__state">{kb(f.size_bytes)}</span>
         </li>
       ))}
@@ -154,7 +154,18 @@ export default async function RecordPage({ params }: Props) {
                       {plots.map(({ f, data }) => (
                         <XvgPlot key={f.id} data={data} caption={`${a.name}: ${f.filename}`} id={`plot-${f.id.slice(0, 8)}`} />
                       ))}
-                      <Downloads files={mine} />
+                      {mine.some((f) => f.kind === "png") && (
+                        <div className="md-gallery">
+                          {mine.filter((f) => f.kind === "png").map((f) => (
+                            <figure key={f.id}>
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img src={f.url} alt={`${a.name}: ${f.caption || f.filename}${run.pdb_id ? ` (${run.pdb_id})` : ""}`} loading="lazy" decoding="async" />
+                              <figcaption>{f.caption || f.filename}</figcaption>
+                            </figure>
+                          ))}
+                        </div>
+                      )}
+                      <Downloads files={mine.filter((f) => f.kind !== "png")} />
                       {type && <Link className="md-card__more" href={`/analysis/${type.slug}`}>About {type.name} →</Link>}
                     </section>
                   );

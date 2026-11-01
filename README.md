@@ -128,6 +128,15 @@ select public.approve_record('<record id>');
 
 Pending records: `select id, title, owner_id from public.records where status = 'pending';`
 
+### The imported MD_Simulation_Database
+
+`MD_Simulation_Database/` holds 145 simulation folders (JPG figures, `.xvg` and `.csv` data) and `Simulation_Index.csv`.
+They are imported as published records owned by an "Insilicology" account. The files stay in this GitHub repository:
+each file row has an `external_url` (jsDelivr, pinned to a commit) and the site links to it. To rebuild the manifest after
+adding folders, run `node --experimental-strip-types --no-warnings scripts/gen-import-manifest.ts`. The one-off import ran
+as the Edge Function in `supabase/functions/import-md-database` (it needs `classify.ts` and `xvg.ts` copied next to it
+when deployed), which calls the service-role-only `import_publish_record()`.
+
 ### Database tests
 
 ```bash
