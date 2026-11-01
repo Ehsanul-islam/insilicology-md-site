@@ -27,4 +27,13 @@ begin
   perform t.is((select type_slug from public.public_records where id = rid), 'rmsd', 'type_id points at the first analysis');
   perform t.is((select count(*) from public.search_records(p_pdb => '2hbs')), 1::bigint, 'search finds it');
   perform t.root();
+
+  -- plot data stays out of the snapshot but is still served from the series view
+  update public.record_files set parsed = '{"series":[{"legend":"","points":[[0,1],[1,2]]}]}' where record_id = rid;
+  perform public.import_publish_record(rid);
+  perform t.is((select published_snapshot -> 'files' -> 0 ? 'parsed' from public.records where id = rid), false, 'snapshot has no plot data');
+  perform t.is((select published_snapshot -> 'files' -> 0 ->> 'has_plot' from public.records where id = rid), 'true', 'but says it has one');
+  perform t.anon();
+  perform t.is((select count(*) from public.public_record_series where record_id = rid), 1::bigint, 'the series view serves it');
+  perform t.root();
 end $$;
