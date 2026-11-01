@@ -25,7 +25,7 @@ function contentSecurityPolicy() {
     "style-src 'self' 'unsafe-inline'",
     `img-src 'self' data: blob: https://cdn.jsdelivr.net ${supabase}`.trim(),
     "font-src 'self' data:",
-    `connect-src 'self' ${supabase}`.trim(),
+    `connect-src 'self' https://files.rcsb.org ${supabase}`.trim(),
     "frame-src https://challenges.cloudflare.com",
     "worker-src 'self' blob:",
     "object-src 'none'",

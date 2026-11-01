@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { useMdThemeValue } from "./useMdTheme";
 import { mountAscii, type AsciiFocus, type AsciiHandle } from "./asciiEngine";
 
+const BUNDLED = new Set(["1hvr", "1afs"]);
+
 export interface AsciiMoleculeProps {
   pdbId: string;
   ligandResn?: string;
@@ -47,7 +49,8 @@ export function AsciiMolecule({
     if (!el) return;
     const id = pdbId.toLowerCase();
     handle.current = mountAscii(el, {
-      pdbUrl: `/structures/${id}.pdb`,
+      // structures shipped with the site load locally; any other published PDB ID is fetched from RCSB
+      pdbUrl: BUNDLED.has(id) ? `/structures/${id}.pdb` : `https://files.rcsb.org/download/${id.toUpperCase()}.pdb`,
       ligandResn,
       focus,
       zoom,

@@ -127,11 +127,11 @@ export function figuresFor(row: Pick<PublicRecordRow, "id" | "files" | "type_slu
       ({ id: f.id, run_id: row.id, kind, image_path: null, xvg_path: null, caption: f.caption, image_url: null, xvg_url: null } as MdFigure);
     if (isImage && !fig.image_path) {
       fig.image_path = f.storage_path;
-      fig.image_url = fileUrl(f.id);
+      fig.image_url = f.external_url || fileUrl(f.id);
     }
     if (isData && !fig.xvg_path) {
       fig.xvg_path = f.storage_path;
-      fig.xvg_url = fileUrl(f.id);
+      fig.xvg_url = f.external_url || fileUrl(f.id);
     }
     fig.caption ||= f.caption;
     groups.set(kind, fig);

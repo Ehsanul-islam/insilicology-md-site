@@ -15,8 +15,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   if (!UUID.test(id)) return new NextResponse("Not found", { status: 404 });
 
   const pub = createPublicClient();
-  const admin = createAdminSupabase();
-  if (!pub || !admin) return new NextResponse("File downloads are not configured", { status: 503 });
+  if (!pub) return new NextResponse("File downloads are not configured", { status: 503 });
 
   // an explicit JSON filter: supabase-js's contains() would turn an array of objects into a Postgres array literal
   const { data, error } = await pub.from("public_records").select("files").filter("files", "cs", JSON.stringify([{ id }])).limit(1).maybeSingle();
@@ -32,6 +31,9 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     return NextResponse.redirect(file.external_url, { status: 302, headers: { "Cache-Control": "public, max-age=3600" } });
   }
 
+  // files in Storage need the service key to be signed
+  const admin = createAdminSupabase();
+  if (!admin) return new NextResponse("File downloads are not configured", { status: 503 });
   const download = request.nextUrl.searchParams.get("download") === "1";
   const { data: signed, error: signError } = await admin.storage
     .from("record-files")
