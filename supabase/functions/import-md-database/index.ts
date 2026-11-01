@@ -2,7 +2,7 @@
 // ./xvg.ts (copies of src/lib/import/classify.ts and src/lib/xvg.ts). Reads the repository through the CDN,
 // writes with the project's own service key, and is stubbed out once the import has run.
 //   GET ?ref=<commit sha>&i=<manifest row>   imports one record   (i=-1 returns the row count)
-// Requires the x-import-token header to match the IMPORT_TOKEN secret.
+// Requires the one-time x-import-token header.
 import { createClient } from "jsr:@supabase/supabase-js@2";
 import { recordFromRow, slugify, type IndexRow } from "./classify.ts";
 import { parseTable, parseXvg, toPlotData } from "./xvg.ts";
@@ -27,8 +27,10 @@ async function parsedFor(url: string, kind: string) {
 }
 
 Deno.serve(async (req) => {
-  const token = Deno.env.get("IMPORT_TOKEN");
-  if (!token || req.headers.get("x-import-token") !== token) return json({ error: "forbidden" }, 403);
+  // only the holder of the one-time token (its SHA-256 is embedded here) may run the import
+  const sent = new TextEncoder().encode(req.headers.get("x-import-token") ?? "");
+  const hash = [...new Uint8Array(await crypto.subtle.digest("SHA-256", sent))].map((b) => b.toString(16).padStart(2, "0")).join("");
+  if (hash !== "709c9d7fcaf29077948f99bf5f505e0e198ecafa7305f4ce17f0ad2a118c3183") return json({ error: "forbidden" }, 403);
   const q = new URL(req.url).searchParams;
   const ref = q.get("ref") ?? "";
   const i = Number(q.get("i"));
