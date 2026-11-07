@@ -58,7 +58,7 @@ export function Showcase({ types }: { types?: TypeLike[] }) {
             <p className="md-label">─◆─ 04 · Showcase</p>
             <h2 id="showcase-title" className="md-h2">Search our simulations</h2>
             <p className="md-lead">
-              Enter a PDB ID to see every complex we have simulated for it, with the analysis figures and raw data you can download and
+              Enter a PDB ID to see every complex we have simulated for it, with the analysis figures and plots you can
               cite.
             </p>
             <PdbSearchBox

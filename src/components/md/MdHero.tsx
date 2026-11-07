@@ -9,7 +9,7 @@ export function MdHero({ ssrFrame }: { ssrFrame?: string }) {
           <h1 id="md-hero-title" className="md-display">Molecular Dynamics Simulation Database</h1>
           <p className="md-lead">
             Search published molecular dynamics results by PDB ID or simulation type: RMSD, RMSF and other analyses,
-            with the data to download and a citation you can use.
+            with plots and a citation you can use.
           </p>
           <div className="md-ctas">
             <a className="md-btn md-btn-primary" href="#contact">

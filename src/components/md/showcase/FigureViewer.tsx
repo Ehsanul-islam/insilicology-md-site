@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import type { OrderedFigure } from "./data/figures";
 import type { MdRun } from "./data/types";
+import { DOWNLOADS_ENABLED } from "../../../lib/features";
 import { CopyButton } from "./Citation";
 import { FigureImage } from "./FigureImage";
 
@@ -95,13 +96,17 @@ export function FigureViewer({ run, figures, index, ligandLabel, ligands, linkFo
                 <dd>{f.meta.y}</dd>
               </>
             )}
-            <dt>Files</dt>
-            <dd className="md-mono md-small">
-              {base}.jpg{f.xvg_path || run.placeholder ? `, ${base}.xvg` : ""}
-            </dd>
+            {DOWNLOADS_ENABLED && (
+              <>
+                <dt>Files</dt>
+                <dd className="md-mono md-small">
+                  {base}.jpg{f.xvg_path || run.placeholder ? `, ${base}.xvg` : ""}
+                </dd>
+              </>
+            )}
           </dl>
           <div className="md-viewer__actions">
-            {f.image_url ? (
+            {DOWNLOADS_ENABLED && (f.image_url ? (
               <a className="md-btn md-btn--solid" href={f.image_url} download={`${base}.jpg`}>
                 Download JPEG
               </a>
@@ -109,8 +114,8 @@ export function FigureViewer({ run, figures, index, ligandLabel, ligands, linkFo
               <button type="button" className="md-btn md-btn--solid" disabled>
                 Download JPEG
               </button>
-            )}
-            {f.xvg_url ? (
+            ))}
+            {DOWNLOADS_ENABLED && (f.xvg_url ? (
               <a className="md-btn" href={f.xvg_url} download={`${base}.xvg`}>
                 Download .xvg data
               </a>
@@ -118,7 +123,7 @@ export function FigureViewer({ run, figures, index, ligandLabel, ligands, linkFo
               <button type="button" className="md-btn" disabled>
                 Download .xvg data
               </button>
-            )}
+            ))}
             <CopyButton text={linkFor(f.anchor)} label="Copy link to this figure" copiedLabel="Link copied" className="md-btn md-btn--quiet" />
           </div>
           <p className="md-notice">Free to use with citation: Insilicology, DOI {run.doi || "[DOI]"}.</p>

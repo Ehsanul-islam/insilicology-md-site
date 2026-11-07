@@ -8,6 +8,7 @@ import Link from "next/link";
 import { recordPath } from "../../../lib/data/records";
 import { complexUrl, displayResn, ligandLabelOf, ligandsOf } from "../../../lib/data/format";
 import { AsciiMotif } from "../ascii/AsciiMotif";
+import { DOWNLOADS_ENABLED } from "../../../lib/features";
 import { CitationBox, CopyButton } from "./Citation";
 import { FigureImage } from "./FigureImage";
 import { FigureViewer } from "./FigureViewer";
@@ -151,6 +152,7 @@ export function ResultsView({ pdb, runs, current, onPick }: Props) {
           </dl>
         </div>
         <div className="md-detail__actions">
+          {DOWNLOADS_ENABLED && (<>
           <button
             type="button"
             className="md-btn md-btn--solid md-btn--block"
@@ -164,6 +166,7 @@ export function ResultsView({ pdb, runs, current, onPick }: Props) {
               {IS_PREVIEW ? "Downloads are disabled in this preview." : "A zip of everything is coming soon. Use the buttons on each figure for now."}
             </p>
           )}
+          </>)}
           {dl.error && (
             <p className="md-error" role="alert">
               {dl.error}
@@ -196,6 +199,7 @@ export function ResultsView({ pdb, runs, current, onPick }: Props) {
             ) : (
               <span />
             )}
+            {DOWNLOADS_ENABLED && (
             <button
               type="button"
               className="md-btn md-btn--sm md-btn--quiet"
@@ -203,9 +207,10 @@ export function ResultsView({ pdb, runs, current, onPick }: Props) {
             >
               {allSelected ? "Clear selection" : "Select all"}
             </button>
+            )}
           </div>
 
-          {selected.size > 0 && (
+          {DOWNLOADS_ENABLED && selected.size > 0 && (
             <div className="md-selbar" role="status">
               <span>
                 <strong>{selected.size}</strong> of {figures.length} figures selected
@@ -236,10 +241,12 @@ export function ResultsView({ pdb, runs, current, onPick }: Props) {
                       <span className="md-fig__label">{f.label}</span>
                       <span className="md-fig__desc">{f.desc}</span>
                     </figcaption>
+                    {DOWNLOADS_ENABLED && (
                     <label className="md-fig__select">
                       <input type="checkbox" checked={on} onChange={() => toggle(f.id)} aria-label={`Select ${f.label} for download`} />
                       <span aria-hidden="true">Select</span>
                     </label>
+                    )}
                   </div>
                   <button type="button" className="md-paper md-fig__open" onClick={() => openViewer(f.anchor)} aria-label={`Open ${f.label} in the viewer`}>
                     <FigureImage figure={f} run={run} ligands={ligs} />
@@ -248,7 +255,7 @@ export function ResultsView({ pdb, runs, current, onPick }: Props) {
                     <button type="button" className="md-btn md-btn--sm md-btn--quiet" onClick={() => openViewer(f.anchor)}>
                       View
                     </button>
-                    {f.image_url ? (
+                    {DOWNLOADS_ENABLED && (f.image_url ? (
                       <a className="md-btn md-btn--sm md-btn--quiet" href={f.image_url} download>
                         JPEG
                       </a>
@@ -256,8 +263,8 @@ export function ResultsView({ pdb, runs, current, onPick }: Props) {
                       <button type="button" className="md-btn md-btn--sm md-btn--quiet" disabled>
                         JPEG
                       </button>
-                    )}
-                    {f.xvg_url ? (
+                    ))}
+                    {DOWNLOADS_ENABLED && (f.xvg_url ? (
                       <a className="md-btn md-btn--sm md-btn--quiet" href={f.xvg_url} download>
                         .xvg
                       </a>
@@ -265,7 +272,7 @@ export function ResultsView({ pdb, runs, current, onPick }: Props) {
                       <button type="button" className="md-btn md-btn--sm md-btn--quiet" disabled>
                         .xvg
                       </button>
-                    )}
+                    ))}
                     <CopyButton text={linkFor(f.anchor)} label="Copy link" copiedLabel="Link copied" />
                   </div>
                 </figure>

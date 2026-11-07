@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createAdminSupabase } from "../../../../lib/supabase/admin";
+import { DOWNLOADS_ENABLED } from "../../../../lib/features";
 import { createPublicClient } from "../../../../lib/supabase/public";
 
 const EXTERNAL_HOSTS = new Set(["cdn.jsdelivr.net", "raw.githubusercontent.com"]);
@@ -23,8 +24,11 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     console.error("file lookup failed", error.message);
     return new NextResponse("Temporarily unavailable", { status: 503 });
   }
-  const file = (data?.files as { id: string; storage_path: string; filename: string; external_url?: string | null }[] | undefined)?.find((f) => f.id === id);
+  const file = (data?.files as { id: string; kind: string; storage_path: string; filename: string; external_url?: string | null }[] | undefined)?.find((f) => f.id === id);
   if (!file) return new NextResponse("Not found", { status: 404 });
+
+  // while downloads are off, only the figures the pages display inline are served; data files are not
+  if (!DOWNLOADS_ENABLED && file.kind !== "png" && file.kind !== "svg") return new NextResponse("Downloads are not available", { status: 403 });
 
   // files that live in the GitHub repository (imported datasets) are served by the CDN
   if (file.external_url && EXTERNAL_HOSTS.has(new URL(file.external_url).hostname)) {
@@ -34,7 +38,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   // files in Storage need the service key to be signed
   const admin = createAdminSupabase();
   if (!admin) return new NextResponse("File downloads are not configured", { status: 503 });
-  const download = request.nextUrl.searchParams.get("download") === "1";
+  const download = DOWNLOADS_ENABLED && request.nextUrl.searchParams.get("download") === "1";
   const { data: signed, error: signError } = await admin.storage
     .from("record-files")
     .createSignedUrl(file.storage_path, 60, download ? { download: file.filename } : undefined);

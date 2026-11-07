@@ -8,6 +8,7 @@ import { abs, pageMetadata } from "../../../lib/seo";
 import { JsonLd } from "../../../components/JsonLd";
 import { CitationBox } from "../../../components/md/showcase/Citation";
 import { PageHead } from "../../../components/md/pages/PageHead";
+import { DOWNLOADS_ENABLED } from "../../../lib/features";
 import { XvgPlot } from "../../../components/md/pages/XvgPlot";
 import type { MdRecordFile, MdRun } from "../../../components/md/showcase/data/types";
 
@@ -44,7 +45,7 @@ const ph = (t: string) => <span className="md-placeholder">[{t}]</span>;
 const kb = (n: number | null) => (n == null ? "" : n >= 1048576 ? `${(n / 1048576).toFixed(1)} MB` : `${Math.max(1, Math.round(n / 1024))} KB`);
 
 function Downloads({ files }: { files: MdRecordFile[] }) {
-  if (!files.length) return null;
+  if (!DOWNLOADS_ENABLED || !files.length) return null;
   return (
     <ul className="md-files">
       {files.map((f) => (
@@ -188,7 +189,7 @@ export default async function RecordPage({ params }: Props) {
               </ul>
             )}
           </div>
-          {supporting.length > 0 && (
+          {DOWNLOADS_ENABLED && supporting.length > 0 && (
             <div>
               <h2>Files</h2>
               <Downloads files={supporting} />

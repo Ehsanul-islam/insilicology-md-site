@@ -11,7 +11,7 @@ export async function generateMetadata() {
   return pageMetadata({
     title: "Molecular dynamics simulation database",
     description:
-      "Search published molecular dynamics simulations by PDB ID or simulation type, with RMSD, RMSF, radius of gyration, SASA and hydrogen-bond data you can download and cite.",
+      "Search published molecular dynamics simulations by PDB ID or simulation type, with RMSD, RMSF, radius of gyration, SASA and hydrogen-bond figures and plots you can cite.",
     path: "/simulations",
     noindex: !records.some(isIndexable),
   });
