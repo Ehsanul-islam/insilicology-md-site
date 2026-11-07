@@ -309,3 +309,6 @@ html[data-theme="dark"] .md-page {
 @media (prefers-reduced-motion: reduce) {
   .md-page, .md-page * { transition: none !important; animation: none !important; }
 }
+
+.md-showcase__count { margin: var(--md-space-2) 0 0; font: 400 14px/22px var(--md-mono); color: var(--md-ink-muted); }
+.md-showcase__count strong { color: var(--md-ink); font-weight: 600; }

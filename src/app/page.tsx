@@ -3,6 +3,7 @@ import path from "node:path";
 import { MdHero } from "../components/md/MdHero";
 import { Showcase } from "../components/md/showcase/Showcase";
 import { listSimulationTypes } from "../lib/data/simulation-type-store";
+import { getRecordStats } from "../lib/data/records";
 import { pageMetadata } from "../lib/seo";
 import { HomeSections } from "../components/md/pages/HomeSections";
 
@@ -23,11 +24,11 @@ async function heroFrame() {
 }
 
 export default async function HomePage() {
-  const types = await listSimulationTypes();
+  const [types, stats] = await Promise.all([listSimulationTypes(), getRecordStats()]);
   return (
     <>
       <MdHero ssrFrame={await heroFrame()} />
-      <Showcase types={types} />
+      <Showcase types={types} stats={stats} />
       <HomeSections />
       {/* Still to build: pricing, reviews and services sections */}
     </>

@@ -142,6 +142,28 @@ export async function listPublishedPdbs(): Promise<PublishedPdb[]> {
   return real.some((p) => p.pdb_id === DEMO_PDB) ? real : [...real, ...SAMPLE_PUBLISHED];
 }
 
+export type RecordStats = { simulations: number; pdbEntries: number };
+
+const dbStats = cachedRead(
+  async (): Promise<RecordStats> => {
+    const db = createPublicClient()!;
+    const [sims, pdbs] = await Promise.all([
+      db.from("public_records").select("id", { count: "exact", head: true }),
+      db.from("published_pdbs").select("pdb_id", { count: "exact", head: true }),
+    ]);
+    if (sims.error) fail("record count", sims.error.message);
+    return { simulations: sims.count ?? 0, pdbEntries: pdbs.count ?? 0 };
+  },
+  "records:stats",
+  TAGS,
+);
+
+/** How many simulations are published. Null without a database, so sample data never shows as a real number. */
+export async function getRecordStats(): Promise<RecordStats | null> {
+  if (!createPublicClient()) return null;
+  return dbStats();
+}
+
 export type FileSeries = { file_id: string; parsed: PlotData };
 
 const dbSeries = cachedRead(

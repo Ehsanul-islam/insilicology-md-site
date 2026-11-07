@@ -41,7 +41,7 @@ function NotSimulated({ pdb }: { pdb: string }) {
 }
 
 /** Landing-page section: search by PDB ID, then browse complexes and their figures. */
-export function Showcase({ types }: { types?: TypeLike[] }) {
+export function Showcase({ types, stats }: { types?: TypeLike[]; stats?: { simulations: number; pdbEntries: number } | null }) {
   const [value, setValue] = useState("");
   const [pdb, setPdb] = useState<string | null>(null);
   const [current, setCurrent] = useState(0);
@@ -70,6 +70,12 @@ export function Showcase({ types }: { types?: TypeLike[] }) {
                 setCurrent(0);
               }}
             />
+            {stats && stats.simulations > 0 && (
+              <p className="md-showcase__count">
+                <strong>{stats.simulations.toLocaleString("en-US")}</strong> simulations
+                {stats.pdbEntries > 0 && <> across <strong>{stats.pdbEntries.toLocaleString("en-US")}</strong> PDB entries</>}
+              </p>
+            )}
           </div>
           <ShowcaseStage lens={lens} run={found ? runs[current] : null} pdb={pdb} />
         </div>
